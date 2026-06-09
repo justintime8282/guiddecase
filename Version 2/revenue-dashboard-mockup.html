@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Guidde — Revenue Operations Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --purple:       #E11B22;
+  --purple-dark:  #B0141A;
+  --purple-mid:   #EC5A60;
+  --purple-light: #FCE4E5;
+  --purple-xlight:#FDF5F5;
+  --navy:         #181E4E;
+  --navy-mid:     #252D6B;
+  --bg:           #FAF6F6;
+  --card:         #FFFFFF;
+  --border:       #F0E0E0;
+  --border-light: #F0E0E0;
+  --text-dark:    #181E4E;
+  --text-mid:     #454876;
+  --text-muted:   #8A8DB5;
+  --green:        #059669; --green-bg: #D1FAE5;
+  --amber:        #D97706; --amber-bg: #FEF3C7;
+  --red:          #DC2626; --red-bg:   #FEE2E2;
+  --blue:         #2563EB;
+  --shadow: 0 1px 4px rgba(176,20,26,0.10);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text-dark); font-size: 13px; }
+/* Illustrative-data watermark curtain (faint, non-blocking) */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='150'%3E%3Ctext x='8' y='86' font-family='Arial,Helvetica,sans-serif' font-size='18' font-weight='700' fill='%232B2B2E' fill-opacity='0.06' transform='rotate(-22 150 75)'%3EILLUSTRATIVE DATA%3C/text%3E%3C/svg%3E") repeat;}
+.illus-banner{position:sticky;top:58px;z-index:90;background:rgba(43,43,46,.04);border-bottom:1px dashed var(--border);text-align:center;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:5px}
+
+/* ── HEADER ── */
+.hdr { background: var(--navy); height: 58px; padding: 0 26px; display: flex; align-items: center; justify-content: space-between; }
+.hdr-left { display: flex; align-items: center; gap: 13px; }
+.logo-mark { width: 30px; height: 30px; background: var(--purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.logo-name { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.4px; }
+.hdr-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
+.hdr-sub { font-size: 12.5px; color: rgba(255,255,255,0.55); }
+.hdr-right { display: flex; align-items: center; gap: 10px; }
+.period-pill { background: var(--purple); color: #fff; font-size: 11.5px; font-weight: 600; padding: 3px 12px; border-radius: 20px; }
+.live { font-size: 11px; color: rgba(255,255,255,0.4); display: flex; align-items: center; gap: 5px; }
+.live::before { content: ''; width: 6px; height: 6px; background: #4ADE80; border-radius: 50%; display: block; }
+
+/* ── FILTER BAR ── */
+.fbar { background: #fff; border-bottom: 1px solid var(--border); padding: 9px 26px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.flabel { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); }
+.ppills { display: flex; gap: 3px; }
+.ppill { padding: 3px 11px; font-size: 11.5px; font-weight: 500; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--text-mid); cursor: pointer; transition: .15s; }
+.ppill:hover { border-color: var(--purple); color: var(--purple); }
+.ppill.on { background: var(--purple); border-color: var(--purple); color: #fff; }
+.fsel { appearance: none; padding: 3px 26px 3px 9px; font-size: 11.5px; font-weight: 500; border-radius: 6px; border: 1px solid var(--border); background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M0 0l4.5 5L9 0z' fill='%238A8DB5'/%3E%3C/svg%3E") no-repeat right 8px center; color: var(--text-dark); cursor: pointer; transition: .15s; }
+.fsel:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 2px rgba(225,27,34,.12); }
+.fsel.on { border-color: var(--purple); background-color: var(--purple-xlight); color: var(--purple); }
+.fdiv { width: 1px; height: 18px; background: var(--border); }
+.freset { margin-left: auto; padding: 3px 11px; font-size: 11.5px; font-weight: 500; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--text-muted); cursor: pointer; transition: .15s; }
+.freset:hover { border-color: var(--red); color: var(--red); }
+
+/* Rep-view banner */
+.rep-banner { display: none; background: var(--purple-light); border-bottom: 1px solid var(--border); padding: 7px 26px; font-size: 12px; color: var(--purple-dark); align-items: center; gap: 7px; }
+.rep-banner.show { display: flex; }
+
+/* ── MAIN ── */
+.main { padding: 20px 26px 30px; max-width: 1600px; margin: 0 auto; }
+.sec-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--text-muted); margin-bottom: 11px; }
+
+/* ── KPI ROW ── */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 13px; margin-bottom: 18px; }
+.kpi { background: #fff; border-radius: 12px; padding: 17px 19px; border: 1px solid var(--border-light); box-shadow: var(--shadow); border-top: 3px solid var(--purple); }
+.kpi-lbl { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 7px; }
+.kpi-val { font-size: 28px; font-weight: 800; color: var(--navy); letter-spacing: -.8px; line-height: 1; margin-bottom: 5px; }
+.kpi-val .u { font-size: 15px; font-weight: 400; color: var(--text-muted); }
+.kpi-sub { font-size: 11.5px; color: var(--text-mid); margin-bottom: 7px; }
+.bdg { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+.bdg-up { background: var(--green-bg); color: var(--green); }
+.bdg-dn { background: var(--red-bg); color: var(--red); }
+.bdg-nu { background: var(--purple-light); color: var(--purple-dark); }
+
+/* ── GRID ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.card { background: #fff; border-radius: 12px; border: 1px solid var(--border-light); box-shadow: var(--shadow); overflow: hidden; }
+.ch { padding: 15px 19px 0; }
+.ct { font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+.cs { font-size: 11.5px; color: var(--text-muted); }
+.cb { padding: 13px 19px 17px; }
+hr.d { border: none; border-top: 1px solid var(--border-light); margin: 11px 0; }
+.sl { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-mid); margin-bottom: 8px; }
+
+/* ── COVERAGE BLOCK ── */
+.cov-block { display: flex; align-items: center; gap: 13px; background: var(--purple-xlight); border: 1px solid var(--border); border-radius: 8px; padding: 9px 13px; margin-bottom: 11px; }
+.cov-big { font-size: 26px; font-weight: 800; color: var(--purple); flex-shrink: 0; }
+.cov-d1 { font-size: 12px; font-weight: 600; color: var(--navy); }
+.cov-d2 { font-size: 11px; color: var(--text-muted); }
+
+/* ── TABLE ── */
+table { width: 100%; border-collapse: collapse; }
+thead th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); padding: 6px 7px; border-bottom: 1px solid var(--border-light); text-align: left; white-space: nowrap; }
+thead th:not(:first-child) { text-align: right; }
+tbody tr:hover { background: var(--purple-xlight); }
+tbody td { padding: 8px 7px; font-size: 12px; color: var(--text-dark); border-bottom: 1px solid #F3EFF9; vertical-align: middle; }
+tbody td:not(:first-child) { text-align: right; }
+.cg { color: var(--green); font-weight: 700; }
+.ca { color: var(--amber); font-weight: 700; }
+.cr { color: var(--red); font-weight: 700; }
+.cp { color: var(--purple); font-weight: 700; }
+.cm { color: var(--text-muted); }
+.wtag { display: inline-block; background: var(--amber-bg); color: #92400E; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 5px; margin-left: 3px; text-transform: uppercase; }
+
+/* ── MOTION CARDS ── */
+.mcards { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 11px; }
+.mc { border-radius: 8px; padding: 9px 11px; border: 1px solid; }
+.mc.plg { background: var(--purple-xlight); border-color: var(--border); }
+.mc.inb { background: #EFF6FF; border-color: #BFDBFE; }
+.mc.out { background: #FFFBEB; border-color: #FDE68A; }
+.mn { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+.mc.plg .mn { color: var(--purple); }
+.mc.inb .mn { color: #1D4ED8; }
+.mc.out .mn { color: #B45309; }
+.mr { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-mid); margin-bottom: 2px; }
+.mr strong { color: var(--navy); font-weight: 600; }
+
+/* ── REP TABLE ── */
+.rc { display: flex; align-items: center; gap: 7px; }
+.av { width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.av1{background:var(--purple);} .av2{background:var(--navy);} .av3{background:var(--blue);} .av4{background:var(--amber);}
+.qbar { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+.qbg { width: 52px; height: 5px; background: var(--purple-light); border-radius: 3px; overflow: hidden; }
+.qfill { height: 100%; border-radius: 3px; }
+
+/* ── EFF STATS ── */
+.effg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 13px; }
+.es { background: var(--purple-xlight); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; }
+.elbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-bottom: 3px; }
+.eval { font-size: 20px; font-weight: 800; color: var(--navy); letter-spacing: -.4px; }
+.eval.go { color: var(--green); } .eval.wa { color: var(--amber); }
+.esub { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── PROGRESS BARS ── */
+.ps { margin-bottom: 10px; }
+.ps:last-child { margin-bottom: 0; }
+.plr { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.pl { font-size: 11.5px; color: var(--text-mid); }
+.pv { font-size: 11.5px; font-weight: 700; color: var(--navy); }
+.pt { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
+.pbg { height: 7px; background: var(--purple-light); border-radius: 4px; overflow: hidden; }
+.pf { height: 100%; border-radius: 4px; background: var(--purple); transition: width .6s ease; }
+.pf.gr { background: var(--green); }
+.pf.am { background: var(--amber); }
+.pf.bl { background: var(--blue); }
+.pf.nv { background: var(--navy); }
+
+/* ── SPLIT ── */
+.sp2 { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.cw { position: relative; }
+.fn { font-size: 10.5px; color: var(--text-muted); text-align: center; padding: 18px 0 2px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-left">
+    <div class="logo-mark">⚡</div>
+    <span class="logo-name">guidde</span>
+    <div class="hdr-sep"></div>
+    <span class="hdr-sub">Revenue Operations Dashboard</span>
+  </div>
+  <div class="hdr-right">
+    <span class="period-pill" id="hdr-pill">Q2 2024</span>
+    <span class="live">Updated Jun 6, 2024 · 09:14 AM</span>
+  </div>
+</header>
+
+<div class="illus-banner">◷ Illustrative mockup · sample data, not real Guidde figures</div>
+
+<!-- FILTER BAR -->
+<div class="fbar">
+  <span class="flabel">Period</span>
+  <div class="ppills">
+    <button class="ppill" data-p="q1" onclick="setPeriod(this)">Q1 2024</button>
+    <button class="ppill on" data-p="q2" onclick="setPeriod(this)">Q2 2024</button>
+    <button class="ppill" data-p="q3" onclick="setPeriod(this)">Q3 2024</button>
+    <button class="ppill" data-p="l12" onclick="setPeriod(this)">L12M</button>
+  </div>
+  <div class="fdiv"></div>
+  <span class="flabel">Product</span>
+  <select class="fsel" id="f-prod" onchange="applyF()">
+    <option value="all">All Products</option>
+    <option value="sales">guidde for Sales</option>
+    <option value="cs">guidde for CS</option>
+    <option value="hr">guidde for HR/Ops</option>
+  </select>
+  <span class="flabel">Motion</span>
+  <select class="fsel" id="f-mot" onchange="applyF()">
+    <option value="all">All Motions</option>
+    <option value="plg">PLG</option>
+    <option value="inb">Inbound</option>
+    <option value="out">Outbound</option>
+  </select>
+  <span class="flabel">Rep</span>
+  <select class="fsel" id="f-rep" onchange="applyF()">
+    <option value="all">All Reps</option>
+    <option value="sc">Sarah Chen</option>
+    <option value="mw">Marcus Webb</option>
+    <option value="pn">Priya Nair</option>
+    <option value="tr">Tyler Ross</option>
+  </select>
+  <span class="flabel">Region</span>
+  <select class="fsel" id="f-reg" onchange="applyF()">
+    <option value="all">All Regions</option>
+    <option value="na">North America</option>
+    <option value="emea">EMEA</option>
+    <option value="apac">APAC</option>
+  </select>
+  <button class="freset" onclick="resetF()">✕ Reset filters</button>
+</div>
+
+<!-- Rep-view banner -->
+<div class="rep-banner" id="rep-banner">
+  ⚡ Showing individual <strong>quota</strong> view for <strong id="rbn"></strong>. Team-level "target" KPIs replaced with rep quota.
+</div>
+
+<main class="main">
+
+<!-- EXEC SUMMARY -->
+<div class="sec-label" id="sec-lbl">Executive Summary — Q2 2024</div>
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-lbl">Open Pipeline</div>
+    <div class="kpi-val" id="k-pipe">$2.85<span class="u">M</span></div>
+    <div class="kpi-sub" id="k-pipe-sub">116 open deals · all active stages</div>
+    <span class="bdg bdg-up" id="k-pipe-bdg">↑ 18% vs Q1</span>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">Commit / Best-Case Forecast</div>
+    <div class="kpi-val" id="k-fc">$412<span class="u">K</span> <span style="font-size:15px;color:#C4B5D9">/ $687K</span></div>
+    <div class="kpi-sub" id="k-fc-sub">Commit · Best-Case · vs $500K team target</div>
+    <span class="bdg bdg-nu" id="k-cov">5.7× pipeline coverage</span>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">Closed Won (QTD)</div>
+    <div class="kpi-val" id="k-won">$318<span class="u">.5K</span></div>
+    <div class="kpi-sub" id="k-won-sub">18 deals · 64% of $500K team target</div>
+    <span class="bdg bdg-up" id="k-won-bdg">↑ 22% vs Q2 prior year</span>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">Avg Sales Cycle</div>
+    <div class="kpi-val" id="k-cyc">34<span class="u"> days</span></div>
+    <div class="kpi-sub">Deal create → Closed Won</div>
+    <span class="bdg bdg-up" id="k-cyc-bdg">↓ 4 days vs Q1</span>
+  </div>
+</div>
+
+<!-- 2×2 GRID -->
+<div class="g2">
+
+  <!-- Q1: Pipeline & Forecasting -->
+  <div class="card">
+    <div class="ch"><div class="ct">Pipeline &amp; Forecasting</div><div class="cs">Stage distribution · conversion rates · velocity</div></div>
+    <div class="cb">
+      <div class="sl">Open Pipeline by Stage ($K)</div>
+      <div class="cw" style="height:168px"><canvas id="cPipe"></canvas></div>
+      <hr class="d">
+      <div class="cov-block">
+        <div class="cov-big" id="cov-ratio">5.7×</div>
+        <div><div class="cov-d1" id="cov-d1">Pipeline Coverage vs Q2 Revenue Target</div><div class="cov-d2" id="cov-d2">$2.85M open pipeline vs $500K team target</div></div>
+      </div>
+      <div class="sl">Stage-to-Stage Conversion &amp; Avg Days in Stage</div>
+      <table><thead><tr><th>Transition</th><th>Conv.</th><th>Avg Days</th></tr></thead><tbody id="conv-tbl"></tbody></table>
+      <hr class="d">
+      <div class="sl">Weighted Pipeline by Period</div>
+      <div class="cw" style="height:90px"><canvas id="cWt"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Q2: Revenue by Motion -->
+  <div class="card">
+    <div class="ch"><div class="ct">Revenue by Motion</div><div class="cs">PLG · Inbound · Outbound — what drives revenue?</div></div>
+    <div class="cb">
+      <div class="sl">Closed Won $ by Deal Source (QTD)</div>
+      <div class="cw" style="height:145px"><canvas id="cMot"></canvas></div>
+      <div class="mcards" id="mcards"></div>
+      <hr class="d">
+      <div class="sp2">
+        <div><div class="sl">Win Rate by Motion</div><div class="cw" style="height:100px"><canvas id="cWR"></canvas></div></div>
+        <div><div class="sl">Avg Deal Size by Motion</div><div class="cw" style="height:100px"><canvas id="cDS"></canvas></div></div>
+      </div>
+      <hr class="d">
+      <div class="sl">Pipeline Created by Motion ($K)</div>
+      <div class="cw" style="height:72px"><canvas id="cMP"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Q3: Sales Performance -->
+  <div class="card">
+    <div class="ch"><div class="ct">Sales Performance</div><div class="cs">Per-rep vs individual quota · Closed Won · Win rate</div></div>
+    <div class="cb">
+      <div class="sl">Rep Quota Attainment — QTD</div>
+      <table><thead><tr><th>Rep</th><th>Won $ (QTD)</th><th>Q2 Quota</th><th>Attainment</th><th>Win Rate</th><th>Avg Deal</th></tr></thead><tbody id="rep-tbl"></tbody></table>
+      <hr class="d">
+      <div class="sp2">
+        <div><div class="sl">Closed-Lost Reasons</div><div class="cw" style="height:135px"><canvas id="cLost"></canvas></div></div>
+        <div><div class="sl">Pipeline Created by Rep ($K)</div><div class="cw" style="height:135px"><canvas id="cRP"></canvas></div></div>
+      </div>
+      <hr class="d">
+      <div class="sl">Quota vs Target Reconciliation</div>
+      <div class="ps">
+        <div class="plr"><span class="pl">Sum of individual rep quotas ($450K)</span><span><span class="pv">90%</span><span class="pt">of $500K team target</span></span></div>
+        <div class="pbg"><div class="pf" style="width:90%"></div></div>
+      </div>
+      <div class="ps">
+        <div class="plr"><span class="pl">Team quota attainment (all reps)</span><span><span class="pv" id="team-att">70.8%</span><span class="pt">of $450K team quota</span></span></div>
+        <div class="pbg"><div class="pf am" id="team-att-bar" style="width:70.8%"></div></div>
+      </div>
+      <div class="ps">
+        <div class="plr"><span class="pl">Forecast accuracy (last closed quarter)</span><span><span class="pv cg">94%</span><span class="pt">target &gt;85%</span></span></div>
+        <div class="pbg"><div class="pf gr" style="width:94%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4: Productivity & Efficiency -->
+  <div class="card">
+    <div class="ch"><div class="ct">Productivity &amp; Efficiency</div><div class="cs">SLAs · funnel conversions · rep throughput</div></div>
+    <div class="cb">
+      <div class="effg">
+        <div class="es"><div class="elbl">PQL → First Action</div><div class="eval go">4.2 h</div><div class="esub">Target &lt;8 hrs · ✓ within SLA</div></div>
+        <div class="es"><div class="elbl">Follow-up SLA Attainment</div><div class="eval wa">78%</div><div class="esub">Target &gt;90% · ⚠ below target</div></div>
+        <div class="es"><div class="elbl">Meetings / Rep (avg/wk)</div><div class="eval">18</div><div class="esub">team average</div></div>
+        <div class="es"><div class="elbl">Won-Deal CS Handoff Rate</div><div class="eval go">91%</div><div class="esub">CS fields + tasks complete</div></div>
+      </div>
+      <hr class="d">
+      <div class="sl">Funnel Conversion Rates</div>
+      <div class="ps"><div class="plr"><span class="pl">Demo-Booked Rate (SQL → Discovery)</span><span><span class="pv">66%</span><span class="pt">tgt 70%</span></span></div><div class="pbg"><div class="pf" style="width:66%"></div></div></div>
+      <div class="ps"><div class="plr"><span class="pl">Discovery → Trial Conversion</span><span><span class="pv">61%</span><span class="pt">tgt 65%</span></span></div><div class="pbg"><div class="pf nv" style="width:61%"></div></div></div>
+      <div class="ps"><div class="plr"><span class="pl">Trial / POC → Proposal</span><span><span class="pv">63%</span><span class="pt">tgt 65%</span></span></div><div class="pbg"><div class="pf nv" style="width:63%"></div></div></div>
+      <div class="ps"><div class="plr"><span class="pl">Proposal → Verbal Commit</span><span><span class="pv ca">58%</span><span class="pt">tgt 65%</span></span></div><div class="pbg"><div class="pf am" style="width:58%"></div></div></div>
+      <hr class="d">
+      <div class="sl">Per-Rep: Win Rate vs SQL→Won</div>
+      <div class="cw" style="height:115px"><canvas id="cREff"></canvas></div>
+    </div>
+  </div>
+
+</div><!-- /g2 -->
+<p class="fn">Illustrative data only — not real Guidde figures · For case study purposes · guidde.com</p>
+</main>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────
+const REPS = [
+  {id:'sc',n:'Sarah Chen', ini:'SC',av:'av1',quota:150,won:127,  wr:34,sw:29,ad:15.9,pipe:412},
+  {id:'mw',n:'Marcus Webb',ini:'MW',av:'av2',quota:120,won:89.5, wr:28,sw:22,ad:11.2,pipe:287},
+  {id:'pn',n:'Priya Nair', ini:'PN',av:'av3',quota:100,won:62,   wr:31,sw:26,ad:8.9, pipe:198},
+  {id:'tr',n:'Tyler Ross', ini:'TR',av:'av4',quota:80, won:40,   wr:22,sw:18,ad:10.0,pipe:147},
+];
+
+const PERIODS = {
+  q1:{lbl:'Q1 2024',    pm:.84, won:261,   pipe:2412,  commit:346, bc:578,  cyc:38, bdg:'↓ 5% vs Q4 2023',         bt:'dn'},
+  q2:{lbl:'Q2 2024',    pm:1.0, won:318.5, pipe:2847.5,commit:412, bc:687,  cyc:34, bdg:'↑ 22% vs Q2 prior year',  bt:'up'},
+  q3:{lbl:'Q3 2024',    pm:.51, won:162,   pipe:3240,  commit:210, bc:390,  cyc:32, bdg:'↑ Projected trajectory',  bt:'nu'},
+  l12:{lbl:'Last 12M',  pm:3.82,won:1218,  pipe:2847.5,commit:412, bc:687,  cyc:35, bdg:'↑ 31% vs prior 12M',      bt:'up'},
+};
+
+const MDATA = {
+  all:  {pw:178, iw:102, ow:38.5, pp:1420,ip:892, op:536, pwr:31,iwr:28,owr:18,pds:9.9, ids:17.0,ods:19.3},
+  plg:  {pw:178, iw:0,   ow:0,    pp:1420,ip:0,   op:0,   pwr:31,iwr:0, owr:0, pds:9.9, ids:0,   ods:0   },
+  inb:  {pw:0,   iw:102, ow:0,    pp:0,   ip:892, op:0,   pwr:0, iwr:28,owr:0, pds:0,   ids:17.0,ods:0   },
+  out:  {pw:0,   iw:0,   ow:38.5, pp:0,   ip:0,   op:536, pwr:0, iwr:0, owr:18,pds:0,   ids:0,   ods:19.3},
+  sales:{pw:82,  iw:68,  ow:48,   pp:580, ip:580, op:480, pwr:26,iwr:32,owr:22,pds:8.2, ids:15.0,ods:22.0},
+  cs:   {pw:142, iw:52,  ow:18,   pp:1120,ip:380, op:200, pwr:34,iwr:26,owr:15,pds:7.8, ids:12.0,ods:16.0},
+  hr:   {pw:88,  iw:74,  ow:22,   pp:680, ip:620, op:280, pwr:28,iwr:30,owr:16,pds:9.0, ids:14.0,ods:18.0},
+};
+
+const REGION_M = {all:1.0, na:.62, emea:.26, apac:.12};
+
+const CONVS = [
+  {label:'SQL → Discovery & Demo',     rate:66,days:3,  bot:false,tot:false},
+  {label:'Discovery → Evaluation',     rate:61,days:7,  bot:false,tot:false},
+  {label:'Evaluation → Proposal',      rate:63,days:14, bot:true, tot:false},
+  {label:'Proposal → Verbal Commit',   rate:58,days:9,  bot:false,tot:false},
+  {label:'Verbal Commit → Closed Won', rate:72,days:4,  bot:false,tot:false},
+  {label:'Overall SQL → Closed Won',   rate:26,days:34, bot:false,tot:true },
+];
+
+const PIPE_STAGES = ['SQL / New Opp','Discovery & Demo','Evaluation / Trial','Proposal & Neg.','Verbal Commit'];
+const PIPE_BASE   = [892, 621.5, 487, 380, 294];
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let ST = {per:'q2', prod:'all', mot:'all', rep:'all', reg:'all'};
+
+// ── COMPUTE ───────────────────────────────────────────────────────────────
+function compute(s) {
+  const P = PERIODS[s.per];
+  const rm = REGION_M[s.reg];
+  const sm = P.pm * rm;
+
+  const reps = s.rep === 'all' ? REPS : REPS.filter(r => r.id === s.rep);
+  const isRep = s.rep !== 'all';
+  const repObj = isRep ? reps[0] : null;
+
+  // Motion key: specific motion filter > product-based mix > all
+  const mkey = s.mot !== 'all' ? s.mot : (s.prod !== 'all' ? s.prod : 'all');
+  const M = MDATA[mkey] || MDATA.all;
+
+  const teamTarget = 500;
+  const sumQuota = reps.reduce((a,r) => a + r.quota, 0);
+
+  const totalWon = isRep ? reps.reduce((a,r) => a + r.won, 0) * sm : P.won * rm;
+  const totalPipe = s.per === 'l12' ? P.pipe * rm : P.pipe * rm;
+
+  const pipeStages = PIPE_BASE.map(v => +(v * sm * (isRep ? 0.25 : 1)).toFixed(1));
+  const pipeSum = pipeStages.reduce((a,b) => a+b, 0);
+  const covRatio = (pipeSum / (isRep ? sumQuota : teamTarget)).toFixed(1);
+
+  const motWon   = [M.pw, M.iw, M.ow].map(v => +(v*sm).toFixed(1));
+  const motPipe  = [M.pp, M.ip, M.op].map(v => +(v*sm).toFixed(0));
+  const motWR    = [M.pwr, M.iwr, M.owr];
+  const motDS    = [M.pds, M.ids, M.ods];
+
+  const weighted = [+(P.commit*rm).toFixed(0), +(P.bc*rm).toFixed(0), +(1140*sm).toFixed(0)];
+
+  const repNames    = reps.map(r => r.n.split(' ')[0]);
+  const repWon      = reps.map(r => +(r.won * sm).toFixed(1));
+  const repQuota    = reps.map(r => +(r.quota * P.pm).toFixed(0));
+  const repAttain   = reps.map((r,i) => +((repWon[i]/repQuota[i])*100).toFixed(1));
+  const repPipe     = reps.map(r => +(r.pipe * sm).toFixed(0));
+  const repWR       = reps.map(r => r.wr);
+  const repSW       = reps.map(r => r.sw);
+  const repAD       = reps.map(r => r.ad);
+  const teamAtt     = (repWon.reduce((a,b)=>a+b,0)/sumQuota*100).toFixed(1);
+
+  return {
+    P, sm, rm, reps, isRep, repObj,
+    teamTarget, sumQuota, totalWon: totalWon.toFixed(1), totalPipe: totalPipe.toFixed(1),
+    commit: (P.commit*rm).toFixed(0), bc: (P.bc*rm).toFixed(0), cyc: P.cyc,
+    wonPctTarget: (totalWon/teamTarget*100).toFixed(0),
+    wonPctQuota:  (totalWon/sumQuota*100).toFixed(0),
+    pipeSum: pipeSum.toFixed(0), covRatio, pipeStages,
+    motWon, motPipe, motWR, motDS, weighted,
+    repNames, repWon, repQuota, repAttain, repPipe, repWR, repSW, repAD, repAD,
+    teamAtt, M,
+  };
+}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────
+const C = {
+  purple:'#E11B22', navy:'#181E4E', blue:'#2B2B2E',
+  amber:'#D97706',  green:'#059669', red:'#DC2626', slate:'#8A8DB5',
+};
+Chart.defaults.font.family = "-apple-system,'Segoe UI',system-ui,sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#8A8DB5';
+
+const CH = {};
+function mk(id,cfg){ CH[id] = new Chart(document.getElementById(id).getContext('2d'), cfg); }
+
+function initCharts(d) {
+  mk('cPipe',{type:'bar',data:{labels:PIPE_STAGES,datasets:[{data:d.pipeStages,
+    backgroundColor:['rgba(225,27,34,.82)','rgba(225,27,34,.65)','rgba(225,27,34,.50)','rgba(225,27,34,.36)','rgba(225,27,34,.24)'],
+    borderRadius:4,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.parsed.x}K`}}},
+      scales:{x:{grid:{color:'#F0E0E0'},ticks:{callback:v=>`$${v}K`}},y:{grid:{display:false}}}}});
+
+  mk('cWt',{type:'bar',data:{labels:['Commit','Best-Case','Next Qtr Proj.'],datasets:[{data:d.weighted,
+    backgroundColor:[C.green,C.blue,'rgba(225,27,34,.55)'],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.parsed.y}K`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E0E0'},ticks:{callback:v=>`$${v}K`}}}}});
+
+  mk('cMot',{type:'bar',data:{labels:['PLG','Inbound','Outbound'],datasets:[{data:d.motWon,
+    backgroundColor:[C.purple,C.blue,C.amber],borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.parsed.y}K Closed Won`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E0E0'},ticks:{callback:v=>`$${v}K`}}}}});
+
+  mk('cWR',{type:'bar',data:{labels:['PLG','Inbound','Outbound'],datasets:[{data:d.motWR,
+    backgroundColor:[C.purple,C.blue,C.amber],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E0E0'},max:45,ticks:{callback:v=>`${v}%`}}}}});
+
+  mk('cDS',{type:'bar',data:{labels:['PLG','Inbound','Outbound'],datasets:[{data:d.motDS,
+    backgroundColor:[C.purple,C.blue,C.amber],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.parsed.y}K`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E0E0'},ticks:{callback:v=>`$${v}K`}}}}});
+
+  mk('cMP',{type:'bar',data:{labels:['PLG','Inbound','Outbound'],datasets:[{data:d.motPipe,
+    backgroundColor:[C.purple,C.blue,C.amber],borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.parsed.x}K`}}},
+      scales:{x:{grid:{color:'#F0E0E0'},ticks:{callback:v=>`$${v}K`}},y:{grid:{display:false}}}}});
+
+  mk('cLost',{type:'doughnut',data:{labels:['No Budget','Lost to Competitor','No Decision','Poor Fit'],
+    datasets:[{data:[38,27,22,13],backgroundColor:[C.red,C.amber,C.slate,'#D9C7C7'],borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'right',labels:{boxWidth:9,padding:7,font:{size:10}}},
+               tooltip:{callbacks:{label:c=>` ${c.parsed}%`}}}}});
+
+  mk('cRP',{type:'bar',data:{labels:d.repNames,datasets:[{data:d.repPipe,
+    backgroundColor:[C.purple,C.navy,C.blue,C.amber],borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.parsed.x}K`}}},
+      scales:{x:{grid:{color:'#F0E0E0'},ticks:{callback:v=>`$${v}K`}},y:{grid:{display:false}}}}});
+
+  mk('cREff',{type:'bar',data:{labels:d.repNames,datasets:[
+    {label:'Win Rate',data:d.repWR,backgroundColor:'rgba(225,27,34,.75)',borderRadius:3},
+    {label:'SQL→Won', data:d.repSW,backgroundColor:'rgba(37,99,235,.70)', borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',align:'end',labels:{boxWidth:10,padding:10,font:{size:11}}},
+               tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0E0E0'},max:50,ticks:{callback:v=>`${v}%`}}}}});
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function renderKPIs(d) {
+  const isRep = d.isRep;
+  const rn = isRep ? d.reps[0].n : '';
+  const fn = isRep ? rn.split(' ')[0] : '';
+
+  document.getElementById('sec-lbl').textContent =
+    (isRep ? rn + ' · ' : '') + d.P.lbl + (isRep ? ' — Quota View' : ' — Revenue Target View');
+
+  const p = +d.totalPipe;
+  document.getElementById('k-pipe').innerHTML =
+    (p>=1000 ? `$${(p/1000).toFixed(2)}<span class="u">M</span>` : `$${p}<span class="u">K</span>`);
+
+  const w = +d.totalWon;
+  document.getElementById('k-won').innerHTML =
+    (w>=1000 ? `$${(w/1000).toFixed(2)}<span class="u">M</span>` : `$${w}<span class="u">K</span>`);
+  document.getElementById('k-won-sub').textContent = isRep
+    ? `${d.wonPctQuota}% of $${d.sumQuota}K individual quota`
+    : `${d.wonPctTarget}% of $${d.teamTarget}K team target`;
+  document.getElementById('k-won-bdg').textContent = d.P.bdg;
+  document.getElementById('k-won-bdg').className = `bdg bdg-${d.P.bt}`;
+
+  document.getElementById('k-fc').innerHTML =
+    `$${d.commit}<span class="u">K</span> <span style="font-size:15px;color:#C4B5D9">/ $${d.bc}K</span>`;
+  document.getElementById('k-fc-sub').textContent = isRep
+    ? `Commit · Best-Case · vs ${fn}'s $${d.sumQuota}K individual quota`
+    : `Commit · Best-Case · vs $${d.teamTarget}K team target`;
+  document.getElementById('k-cov').textContent = `${d.covRatio}× pipeline coverage`;
+
+  document.getElementById('k-cyc').innerHTML = `${d.cyc}<span class="u"> days</span>`;
+  document.getElementById('hdr-pill').textContent = d.P.lbl;
+
+  document.getElementById('cov-ratio').textContent = `${d.covRatio}×`;
+  document.getElementById('cov-d1').textContent = isRep
+    ? `Pipeline Coverage vs ${fn}'s Individual Quota`
+    : `Pipeline Coverage vs ${d.P.lbl} Revenue Target`;
+  document.getElementById('cov-d2').textContent =
+    `$${d.pipeSum}K open pipeline vs $${isRep ? d.sumQuota : d.teamTarget}K ${isRep ? 'individual quota' : 'team target'}`;
+
+  document.getElementById('team-att').textContent = d.teamAtt + '%';
+  const bar = document.getElementById('team-att-bar');
+  bar.style.width = Math.min(100, +d.teamAtt) + '%';
+  bar.className = 'pf ' + (+d.teamAtt >= 80 ? 'gr' : +d.teamAtt >= 60 ? 'am' : 'cr');
+
+  const banner = document.getElementById('rep-banner');
+  if (isRep) { banner.classList.add('show'); document.getElementById('rbn').textContent = rn; }
+  else banner.classList.remove('show');
+}
+
+function renderConvTable(d) {
+  const pm = d.P.pm;
+  document.getElementById('conv-tbl').innerHTML = CONVS.map(c => {
+    let r = c.rate;
+    if (ST.per==='q1') r = Math.max(20, r-3);
+    if (ST.per==='q3') r = Math.min(80, r+2);
+    const rc = r>=65 ? 'cg' : r>=55 ? 'ca' : 'cr';
+    const row = c.tot ? 'background:var(--purple-xlight);font-weight:600' : '';
+    return `<tr style="${row}"><td>${c.label}</td><td><span class="${rc}">${r}%</span></td>
+      <td>${c.days} d${c.bot ? '<span class="wtag">⚠ bottleneck</span>' : ''}</td></tr>`;
+  }).join('');
+}
+
+function renderRepTable(d) {
+  document.getElementById('rep-tbl').innerHTML = d.reps.map((r,i) => {
+    const a = d.repAttain[i];
+    const ac = a>=80?'cg':a>=60?'ca':'cr';
+    const wc = r.wr>=32?'cg':r.wr>=25?'':'ca';
+    const bw = Math.min(100, Math.round(a));
+    const bc = a>=80?C.green:a>=60?C.amber:C.red;
+    const hi = ST.rep !== 'all' && ST.rep === r.id;
+    return `<tr style="${hi?'background:rgba(225,27,34,.05)':''}">
+      <td><div class="rc"><div class="av ${r.av}">${r.ini}</div>${r.n}</div></td>
+      <td><div class="qbar">$${d.repWon[i]}K<div class="qbg"><div class="qfill" style="width:${bw}%;background:${bc}"></div></div></div></td>
+      <td>$${d.repQuota[i]}K</td>
+      <td><span class="${ac}">${a}%</span></td>
+      <td><span class="${wc}">${r.wr}%</span></td>
+      <td>$${r.ad}K</td></tr>`;
+  }).join('');
+}
+
+function renderMotionCards(d) {
+  const M = d.M, sm = d.sm;
+  document.getElementById('mcards').innerHTML = `
+    <div class="mc plg"><div class="mn">PLG</div>
+      <div class="mr"><span>Won $</span><strong>$${(M.pw*sm).toFixed(0)}K</strong></div>
+      <div class="mr"><span>Win Rate</span><strong>${M.pwr||'—'}%</strong></div>
+      <div class="mr"><span>Avg Deal</span><strong>${M.pds?'$'+M.pds+'K':'—'}</strong></div>
+      <div class="mr"><span>Pipeline</span><strong>$${(M.pp*sm).toFixed(0)}K</strong></div></div>
+    <div class="mc inb"><div class="mn">Inbound</div>
+      <div class="mr"><span>Won $</span><strong>$${(M.iw*sm).toFixed(0)}K</strong></div>
+      <div class="mr"><span>Win Rate</span><strong>${M.iwr||'—'}%</strong></div>
+      <div class="mr"><span>Avg Deal</span><strong>${M.ids?'$'+M.ids+'K':'—'}</strong></div>
+      <div class="mr"><span>Pipeline</span><strong>$${(M.ip*sm).toFixed(0)}K</strong></div></div>
+    <div class="mc out"><div class="mn">Outbound</div>
+      <div class="mr"><span>Won $</span><strong>$${(M.ow*sm).toFixed(0)}K</strong></div>
+      <div class="mr"><span>Win Rate</span><strong>${M.owr||'—'}%</strong></div>
+      <div class="mr"><span>Avg Deal</span><strong>${M.ods?'$'+M.ods+'K':'—'}</strong></div>
+      <div class="mr"><span>Pipeline</span><strong>$${(M.op*sm).toFixed(0)}K</strong></div></div>`;
+}
+
+function updateCharts(d) {
+  CH.cPipe.data.datasets[0].data = d.pipeStages; CH.cPipe.update('active');
+  CH.cWt.data.datasets[0].data   = d.weighted;   CH.cWt.update('active');
+  CH.cMot.data.datasets[0].data  = d.motWon;     CH.cMot.update('active');
+  CH.cWR.data.datasets[0].data   = d.motWR;      CH.cWR.update('active');
+  CH.cDS.data.datasets[0].data   = d.motDS;      CH.cDS.update('active');
+  CH.cMP.data.datasets[0].data   = d.motPipe;    CH.cMP.update('active');
+  CH.cRP.data.labels              = d.repNames;
+  CH.cRP.data.datasets[0].data    = d.repPipe;    CH.cRP.update('active');
+  CH.cREff.data.labels            = d.repNames;
+  CH.cREff.data.datasets[0].data  = d.repWR;
+  CH.cREff.data.datasets[1].data  = d.repSW;      CH.cREff.update('active');
+}
+
+// ── FILTER CONTROLS ────────────────────────────────────────────────────────
+function setPeriod(btn) {
+  document.querySelectorAll('.ppill').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  ST.per = btn.dataset.p;
+  applyF();
+}
+function applyF() {
+  ST.prod = document.getElementById('f-prod').value;
+  ST.mot  = document.getElementById('f-mot').value;
+  ST.rep  = document.getElementById('f-rep').value;
+  ST.reg  = document.getElementById('f-reg').value;
+  ['f-prod','f-mot','f-rep','f-reg'].forEach(id => {
+    document.getElementById(id).classList.toggle('on', document.getElementById(id).value !== 'all');
+  });
+  const d = compute(ST);
+  renderKPIs(d); renderConvTable(d); renderRepTable(d); renderMotionCards(d); updateCharts(d);
+}
+function resetF() {
+  ST = {per:'q2',prod:'all',mot:'all',rep:'all',reg:'all'};
+  document.querySelectorAll('.ppill').forEach(b => b.classList.toggle('on', b.dataset.p==='q2'));
+  ['f-prod','f-mot','f-rep','f-reg'].forEach(id => {
+    document.getElementById(id).value='all';
+    document.getElementById(id).classList.remove('on');
+  });
+  applyF();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const d = compute(ST);
+  initCharts(d);
+  renderKPIs(d); renderConvTable(d); renderRepTable(d); renderMotionCards(d);
+});
+</script>
+</body>
+</html>

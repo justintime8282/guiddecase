@@ -1,0 +1,10 @@
+# Local tooling config
+.claude/
+
+# OS / OneDrive junk
+desktop.ini
+Thumbs.db
+.DS_Store
+
+# Company-provided assignment (do not redistribute)
+Sales Operations Manager - Home assignment.pdf
