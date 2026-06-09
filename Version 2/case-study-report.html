@@ -110,6 +110,8 @@ strong{color:var(--ink);font-weight:600}
 .placeholder .v-play{background:var(--muted);box-shadow:none}
 .placeholder .v-link{color:var(--muted);border-color:var(--muted)}
 .placeholder .v-link:hover{background:var(--muted);color:#fff}
+.v-link.off{cursor:not-allowed;opacity:.6}
+.v-link.off:hover{background:transparent !important;color:var(--muted) !important}
 
 /* TABLE */
 .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin:14px 0;background:var(--card)}
@@ -310,10 +312,10 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     <div class="v-head">
       <div class="v-play">▶</div>
       <div class="v-title"><small>Guidde Walkthrough · Video 1</small>Workflow 1 — Lead Lifecycle</div>
-      <a class="v-link" href="#" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+      <a class="v-link" href="https://app.guidde.com/share/playbooks/gHbKqwNNo3ezwdY9dmdUp2?origin=vSqB4fNHwYWjP162UnEKZYSmiGJ2&amp;mode=videoOnly" target="_blank" rel="noopener">▶ Watch the walkthrough</a>
     </div>
     <div class="v-note">
-      <b>What the video shows:</b> the live HubSpot build — enrollment on product-activation signals, the forward-only guard, and the PQL-vs-SQL routing branch with reason stamps. <em>To activate the button: replace its <code>href="#"</code> with your YouTube link.</em>
+      <b>What the video shows:</b> the live HubSpot build — enrollment on product-activation signals, the forward-only guard, and the PQL-vs-SQL routing branch with reason stamps. <em>Click "Watch the walkthrough" to play the recorded guidde.</em>
     </div>
   </div>
 
@@ -346,10 +348,10 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     <div class="v-head">
       <div class="v-play">▶</div>
       <div class="v-title"><small>Guidde Walkthrough · Video 2</small>Workflow 2 — Deal Automation</div>
-      <a class="v-link" href="#" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+      <span class="v-link off" aria-disabled="true" title="To be added once recorded">▶ Not available yet · to be updated</span>
     </div>
     <div class="v-note">
-      <b>What the video will show:</b> the dedupe branch (create vs. update), auto-stamped deal fields, and the validation rules. <em>Record it, upload to YouTube, then set the button's <code>href</code> to that link.</em>
+      <b>What the video will show:</b> the dedupe branch (create vs. update), auto-stamped deal fields, and the validation rules. <em>Recording in progress — this walkthrough will be added shortly.</em>
     </div>
   </div>
 
