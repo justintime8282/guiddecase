@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guidde — Sales Operations Manager Case Study</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --brand:#E11B22; --brand-dark:#B0141A; --brand-deep:#8A0F16;
+  --brand-mid:#EC5A60; --brand-light:#FCE4E5; --brand-xlight:#FDF5F5;
+  --ink:#1A1517; --text:#463B3D; --muted:#9A8E90;
+  --bg:#FAF6F6; --card:#FFFFFF; --border:#F1E5E5; --border-soft:#F7EEEE;
+  --charcoal:#2B2B2E; --slate:#8A8E99; --gold:#E0982F;
+  --green:#1E8E5A; --green-bg:#E2F3EA; --amber:#C9821A; --amber-bg:#FBF0DD;
+  --neg:#C0303A; --neg-bg:#FBE7E8;
+  --shadow:0 1px 3px rgba(138,15,22,.07); --shadow-lg:0 6px 24px rgba(138,15,22,.10);
+  --radius:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:24px;letter-spacing:-1px;color:var(--brand);line-height:1}
+.logo .dot{color:var(--brand)}
+.brand-sep{width:1px;height:22px;background:var(--border)}
+.brand-tag{font-size:13px;color:var(--muted);font-weight:500}
+.nav{display:flex;gap:4px}
+.nav a{font-size:12.5px;color:var(--text);text-decoration:none;padding:6px 11px;border-radius:8px;font-weight:500;transition:.15s}
+.nav a:hover{background:var(--brand-xlight);color:var(--brand)}
+@media(max-width:900px){.nav{display:none}}
+
+/* HERO */
+.hero{max-width:1080px;margin:0 auto;padding:64px 32px 40px;text-align:center}
+.hero .kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);background:var(--brand-light);padding:6px 14px;border-radius:20px;margin-bottom:22px}
+.hero h1{font-size:42px;line-height:1.12;color:var(--ink);letter-spacing:-1.2px;font-weight:800;margin-bottom:18px}
+.hero .thesis{font-size:18px;color:var(--text);max-width:760px;margin:0 auto 26px;line-height:1.55}
+.hero .thesis em{color:var(--brand-dark);font-style:normal;font-weight:600}
+.hero .meta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.hero .meta span{background:var(--card);border:1px solid var(--border);padding:6px 14px;border-radius:20px}
+
+/* LAYOUT */
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+section{padding:40px 0;border-top:1px solid var(--border)}
+/* Major Part dividers — strong red break + extra breathing room */
+section.major{border-top:none;margin-top:60px;padding-top:0;position:relative}
+.part-divider{display:flex;align-items:center;gap:18px;margin:0 0 14px;padding-top:54px;border-top:5px solid var(--brand)}
+.part-divider .pd-badge{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--brand);padding:7px 16px;border-radius:8px;box-shadow:0 4px 12px rgba(225,27,34,.28)}
+.part-divider .pd-title{font-size:15px;font-weight:700;color:var(--ink)}
+.part-divider .pd-rule{flex:1;height:2px;background:linear-gradient(to right,var(--brand-light),transparent)}
+section.major > h2{margin-top:2px}
+.sec-num{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:8px}
+h2{font-size:30px;color:var(--ink);letter-spacing:-.6px;font-weight:800;margin-bottom:8px}
+.sec-lead{font-size:16px;color:var(--text);max-width:780px;margin-bottom:26px}
+h3{font-size:19px;color:var(--ink);font-weight:700;margin:28px 0 12px;letter-spacing:-.2px}
+h4{font-size:15px;color:var(--ink);font-weight:700;margin:18px 0 8px}
+p{margin-bottom:12px}
+strong{color:var(--ink);font-weight:600}
+.lead-row{display:flex;align-items:flex-start;gap:8px}
+
+/* CARDS */
+.cards{display:grid;gap:14px}
+.cards.c2{grid-template-columns:1fr 1fr}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.cards.c2,.cards.c3,.cards.c4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+.card.accent{border-top:3px solid var(--brand)}
+.card h4{margin-top:0}
+.card .ico{width:34px;height:34px;border-radius:9px;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:12px;font-weight:700}
+.card p{font-size:14px;margin-bottom:0;color:var(--text)}
+.card .n{font-size:12px;font-weight:800;color:var(--brand);letter-spacing:.05em}
+
+/* ASSUMPTION list */
+.assume{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:820px){.assume{grid-template-columns:1fr}}
+.assume .a{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:10px;padding:14px 16px;font-size:14px}
+.assume .a b{display:block;color:var(--ink);font-size:13px;margin-bottom:3px}
+
+/* PILL / BADGE */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pill.brand{background:var(--brand-light);color:var(--brand-dark)}
+.pill.ok{background:var(--green-bg);color:var(--green)}
+.pill.warn{background:var(--amber-bg);color:var(--amber)}
+.pill.no{background:var(--neg-bg);color:var(--neg)}
+.pill.ghost{background:#F1EEEE;color:var(--text)}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:18px 0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.flow .step{flex:1;min-width:130px;padding:16px 14px;text-align:center;border-right:1px solid var(--border-soft);position:relative}
+.flow .step:last-child{border-right:none}
+.flow .step .s-stage{font-weight:800;color:var(--ink);font-size:14px}
+.flow .step .s-desc{font-size:11.5px;color:var(--muted);margin-top:3px}
+.flow .step.hl{background:var(--brand-xlight)}
+.flow .step.hl .s-stage{color:var(--brand)}
+
+/* VIDEO CALLOUT */
+.video{background:linear-gradient(135deg,#fff,var(--brand-xlight));border:1.5px solid var(--brand-light);border-radius:var(--radius);padding:22px 24px;margin:22px 0;box-shadow:var(--shadow)}
+.video .v-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.video .v-play{width:42px;height:42px;border-radius:11px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(225,27,34,.3)}
+.video .v-title{font-size:16px;font-weight:800;color:var(--ink)}
+.video .v-title small{display:block;font-size:12px;font-weight:600;color:var(--brand);letter-spacing:.05em;text-transform:uppercase}
+.video .v-link{margin-left:auto;font-size:13px;font-weight:700;color:var(--brand);text-decoration:none;border:1.5px solid var(--brand);padding:7px 16px;border-radius:9px;white-space:nowrap;transition:.15s}
+.video .v-link:hover{background:var(--brand);color:#fff}
+.video .v-note{font-size:13.5px;color:var(--text);background:rgba(255,255,255,.6);border-radius:9px;padding:10px 13px;margin-top:4px}
+.video .v-note b{color:var(--ink)}
+.placeholder .v-play{background:var(--muted);box-shadow:none}
+.placeholder .v-link{color:var(--muted);border-color:var(--muted)}
+.placeholder .v-link:hover{background:var(--muted);color:#fff}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin:14px 0;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead th{background:var(--brand-xlight);color:var(--brand-deep);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:11px 14px;border-bottom:2px solid var(--brand-light);white-space:nowrap}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--border-soft);vertical-align:top;color:var(--text)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--brand-xlight)}
+td b,td strong{color:var(--ink)}
+.owner{font-weight:700;color:var(--brand-dark);font-size:12px;white-space:nowrap}
+
+/* NOTE box */
+.note{border-radius:11px;padding:14px 16px;margin:14px 0;font-size:13.5px;border:1px solid}
+.note.info{background:var(--brand-xlight);border-color:var(--brand-light)}
+.note.warn{background:var(--amber-bg);border-color:#F2DEB5}
+.note .nt{font-weight:800;color:var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;display:block}
+
+/* TIER table */
+.tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+@media(max-width:820px){.tier-grid{grid-template-columns:1fr}}
+.tier-col{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 0;box-shadow:var(--shadow);overflow:hidden}
+.tier-col h4{margin:0;padding:14px 18px;font-size:13px;letter-spacing:.03em;text-transform:uppercase}
+.tier-col.sales h4{background:var(--green-bg);color:var(--green)}
+.tier-col.mkt h4{background:var(--neg-bg);color:var(--neg)}
+.tier-col ul{list-style:none;padding:8px 18px 14px}
+.tier-col li{font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--border-soft);display:flex;gap:8px;align-items:flex-start}
+.tier-col li:last-child{border-bottom:none}
+.tier-col li::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;margin-top:7px}
+.tier-col.sales li::before{background:var(--green)}
+.tier-col.mkt li::before{background:var(--neg)}
+
+/* DASHBOARD */
+.dash{background:var(--charcoal);border-radius:18px;padding:8px;margin:18px 0;box-shadow:var(--shadow-lg);position:relative}
+.dash::after{content:"";position:absolute;inset:8px;border-radius:12px;pointer-events:none;z-index:6;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='140'%3E%3Ctext x='6' y='80' font-family='Arial,Helvetica,sans-serif' font-size='16' font-weight='700' fill='%232B2B2E' fill-opacity='0.07' transform='rotate(-22 140 70)'%3EILLUSTRATIVE DATA%3C/text%3E%3C/svg%3E") repeat;}
+.dash-watermark-badge{position:absolute;top:14px;right:18px;z-index:7;background:rgba(255,255,255,.16);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.25);pointer-events:none}
+.dash-inner{background:#FBF8F8;border-radius:12px;overflow:hidden}
+.dash-bar{background:var(--ink);padding:13px 20px;display:flex;align-items:center;justify-content:space-between}
+.dash-bar .dt{color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;gap:9px}
+.dash-bar .dt .d-dot{color:var(--brand);font-size:18px}
+.dash-bar .dp{font-size:11px;color:rgba(255,255,255,.6);background:rgba(255,255,255,.1);padding:3px 11px;border-radius:20px}
+.dash-body{padding:18px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:820px){.kpi-row{grid-template-columns:1fr 1fr}}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px 16px;border-top:3px solid var(--brand)}
+.kpi .kl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px}
+.kpi .kv{font-size:25px;font-weight:800;color:var(--ink);letter-spacing:-.6px;line-height:1}
+.kpi .kv .u{font-size:14px;color:var(--muted);font-weight:400}
+.kpi .ks{font-size:11px;color:var(--muted);margin-top:5px}
+.kpi .kb{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:9px;margin-top:6px;background:var(--green-bg);color:var(--green)}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:820px){.dgrid{grid-template-columns:1fr}}
+.dcard{background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px 16px}
+.dcard .dct{font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:2px}
+.dcard .dcs{font-size:11px;color:var(--muted);margin-bottom:10px}
+.chart-h{position:relative;height:170px}
+.chart-h.sm{height:130px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.mc{border-radius:8px;padding:9px 10px;border:1px solid}
+.mc.plg{background:var(--brand-xlight);border-color:var(--brand-light)}
+.mc.inb{background:#F2F3F5;border-color:#E2E4E8}
+.mc.out{background:#FCF4E6;border-color:#F2E2C2}
+.mc .mn{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.mc.plg .mn{color:var(--brand)} .mc.inb .mn{color:var(--charcoal)} .mc.out .mn{color:var(--gold)}
+.mc .mr{display:flex;justify-content:space-between;font-size:11px;color:var(--text);margin-bottom:2px}
+.mc .mr b{color:var(--ink)}
+.dtbl{width:100%;border-collapse:collapse;font-size:12px}
+.dtbl th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;padding:5px 6px;border-bottom:1px solid var(--border)}
+.dtbl th:not(:first-child),.dtbl td:not(:first-child){text-align:right}
+.dtbl td{padding:7px 6px;border-bottom:1px solid var(--border-soft);color:var(--text)}
+.dtbl .av{display:inline-flex;align-items:center;gap:6px}
+.dtbl .dot-av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.eff{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.eff .e{background:var(--brand-xlight);border:1px solid var(--brand-light);border-radius:8px;padding:9px 11px}
+.eff .el{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+.eff .ev{font-size:18px;font-weight:800;color:var(--ink);margin-top:2px}
+.eff .ev.g{color:var(--green)} .eff .ev.a{color:var(--amber)}
+.eff .es{font-size:10px;color:var(--muted)}
+.qmap{margin-top:14px}
+
+/* CLOSING */
+.closing{background:var(--ink);color:#fff;border-radius:18px;padding:40px;text-align:center;margin:24px 0}
+.closing h2{color:#fff}
+.closing p{color:rgba(255,255,255,.8);max-width:700px;margin:0 auto 8px;font-size:16px}
+.closing .acc{color:var(--brand-mid);font-weight:600}
+
+footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
+.foot-logo{font-weight:800;color:var(--brand);font-size:16px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="brand">
+    <span class="logo">guidde<span class="dot">.</span></span>
+    <span class="brand-sep"></span>
+    <span class="brand-tag">Sales Operations Manager — Case Study</span>
+  </div>
+  <nav class="nav">
+    <a href="#assumptions">Assumptions</a>
+    <a href="#part1">Part 1 · Automation</a>
+    <a href="#tier">Tier &amp; Scope</a>
+    <a href="#part2">Part 2 · Process</a>
+    <a href="#part3">Part 3 · Dashboard</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="kicker">PLG-Hybrid Revenue Operations</span>
+  <h1>A scalable Sales Ops system for Guidde's PLG-hybrid motion</h1>
+  <p class="thesis"><em>Automate what is objective, preserve human judgment where context matters.</em> This submission turns raw product usage into sales-ready pipeline — with a HubSpot build, a process design, and a leadership dashboard that all answer to the same model.</p>
+  <div class="meta">
+    <span>Author: <strong>Justin Chun</strong></span>
+    <span>Built on HubSpot Sales Hub Pro</span>
+    <span>Includes 2 guidde walkthrough videos</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HOW TO READ -->
+<div class="note info" style="margin-top:8px">
+  <span class="nt">📹 This submission pairs with two guidde videos</span>
+  The HubSpot build is demonstrated in <b>two recorded guidde walkthroughs</b> (Workflow 1 and Workflow 2), sent alongside this report. Look for the <span class="pill brand">▶ Watch</span> callouts in Part 1 — they mark exactly what each video shows, and what was intentionally scoped in or out and why.
+</div>
+
+<!-- ASSUMPTIONS -->
+<section id="assumptions">
+  <div class="sec-num">Section 0</div>
+  <h2>Assumptions &amp; operating logic</h2>
+  <p class="sec-lead">The assignment asks for my logic <em>and</em> assumptions. Everything downstream follows from these.</p>
+  <div class="assume">
+    <div class="a"><b>1 · GTM motion</b>Guidde runs a <strong>PLG-hybrid</strong> motion — low-friction adoption generates intent, and the revenue team converts the right users into pipeline, customers, and expansion.</div>
+    <div class="a"><b>2 · Product usage is a first-class signal</b>Qualification is anchored on a <strong>Product-Qualified Lead (PQL)</strong>, alongside (not instead of) marketing/sales signals.</div>
+    <div class="a"><b>3 · Person ≠ opportunity</b><strong>Lifecycle stage</strong> (where is this person) and <strong>deal stage</strong> (where is this opportunity) are separate-but-connected systems.</div>
+    <div class="a"><b>4 · Ownership spans BDR · AE · CS</b>BDR qualifies &amp; routes; AE owns the active deal; CS supports trial and owns post-sale + expansion.</div>
+    <div class="a"><b>5 · Hybrid deal creation</b>A human makes the qualification call, then the system creates and standardizes the deal — "judgment by human, creation by system."</div>
+    <div class="a"><b>6 · Outbound is a secondary on-ramp</b>It feeds the <strong>same</strong> qualification gate as PLG — one pipeline, two acquisition motions.</div>
+    <div class="a" style="grid-column:1/-1;border-left-color:var(--charcoal)"><b>7 · HubSpot tier (built on Sales Hub Pro trial)</b>Workflows, custom lifecycle stages, and rotate-owner are Sales Hub Pro features (used here). <strong>Native contact lead scoring and marketing-engagement signals require Marketing Hub</strong>, which wasn't part of this trial — so those are presented as design and rebuilt with product-activation equivalents. <a href="#tier" style="color:var(--brand);font-weight:600">See the full Tier &amp; Scope breakdown ↓</a></div>
+  </div>
+</section>
+
+<!-- PART 1 -->
+<section id="part1" class="major">
+  <div class="part-divider"><span class="pd-badge">Part 1</span><span class="pd-rule"></span></div>
+  <h2>HubSpot Workflow &amp; Automation</h2>
+  <p class="sec-lead">Two systems running side by side: a <strong>contact lifecycle</strong> (the person) and a <strong>deal pipeline</strong> (the opportunity), connected by automation.</p>
+
+  <h3>1 · The lifecycle model — the person</h3>
+  <p>I manage the contact lifecycle separately from the deal pipeline. <strong>PQL</strong> sits at the center because Guidde's strongest intent comes from <strong>product behavior</strong>, not just form fills — a contact becomes valuable not by downloading a PDF, but by doing something real in the product.</p>
+  <div class="flow">
+    <div class="step"><div class="s-stage">Subscriber</div><div class="s-desc">opted in</div></div>
+    <div class="step"><div class="s-stage">Lead</div><div class="s-desc">signup / form</div></div>
+    <div class="step"><div class="s-stage">MQL</div><div class="s-desc">marketing intent</div></div>
+    <div class="step hl"><div class="s-stage">PQL</div><div class="s-desc">product activation</div></div>
+    <div class="step hl"><div class="s-stage">SQL</div><div class="s-desc">sales-ready</div></div>
+    <div class="step"><div class="s-stage">Opportunity</div><div class="s-desc">deal open</div></div>
+    <div class="step"><div class="s-stage">Customer</div><div class="s-desc">closed won</div></div>
+  </div>
+
+  <h3>2 · PQL definition &amp; the two routes to SQL</h3>
+  <div class="cards c2">
+    <div class="card accent">
+      <h4>A contact becomes a PQL when…</h4>
+      <p>any in-product activation event fires:</p>
+      <p style="margin-top:8px">
+      <span class="pill brand">First guidde created</span>
+      <span class="pill brand">Guidde published</span>
+      <span class="pill brand">Teammate invited ★</span></p>
+      <p style="margin-top:10px;font-size:13px;color:var(--muted)">★ Teammate-invite is weighted highest — it signals collaboration, virality, and expansion.</p>
+    </div>
+    <div class="card accent">
+      <h4>Two routes into SQL</h4>
+      <p><strong>1 · Direct intent</strong> — a demo is booked, or the BDR qualifies the contact.</p>
+      <p><strong>2 · Accumulated product intent</strong> — two or more activation events stack up (the buildable equivalent of "lead score ≥ 50").</p>
+      <p style="margin-top:8px;font-size:13px;color:var(--muted)">A single event makes someone a PQL (worth watching); explicit intent or accumulation makes them an SQL (worth a rep's time).</p>
+    </div>
+  </div>
+
+  <h3>3 · The deal pipeline — the opportunity</h3>
+  <p>A new-business pipeline that starts at SQL, not at "lead." It begins when product or high-intent signals justify sales engagement — not when a rep decides to open a deal.</p>
+  <div class="flow">
+    <div class="step"><div class="s-stage">SQL</div><div class="s-desc">10%</div></div>
+    <div class="step"><div class="s-stage">Discovery</div><div class="s-desc">25%</div></div>
+    <div class="step"><div class="s-stage">Evaluation</div><div class="s-desc">45%</div></div>
+    <div class="step"><div class="s-stage">Proposal</div><div class="s-desc">65%</div></div>
+    <div class="step"><div class="s-stage">Verbal Commit</div><div class="s-desc">85%</div></div>
+    <div class="step hl"><div class="s-stage">Closed Won</div><div class="s-desc">100%</div></div>
+    <div class="step"><div class="s-stage">Closed Lost</div><div class="s-desc">0%</div></div>
+  </div>
+
+  <!-- WF1 VIDEO -->
+  <h3>4 · Workflow 1 — Lead Lifecycle</h3>
+  <p>A contact-based workflow that promotes contacts through the lifecycle as their product signals build. Enroll on activation → guard against backward movement → branch to PQL or SQL → stamp a change reason.</p>
+
+  <div class="video">
+    <div class="v-head">
+      <div class="v-play">▶</div>
+      <div class="v-title"><small>Guidde Walkthrough · Video 1</small>Workflow 1 — Lead Lifecycle</div>
+      <a class="v-link" href="#" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+    </div>
+    <div class="v-note">
+      <b>What the video shows:</b> the live HubSpot build — enrollment on product-activation signals, the forward-only guard, and the PQL-vs-SQL routing branch with reason stamps. <em>To activate the button: replace its <code>href="#"</code> with your YouTube link.</em>
+    </div>
+  </div>
+
+  <div class="cards c2">
+    <div class="card">
+      <span class="n">ENROLLMENT (OR)</span>
+      <h4 style="margin-top:6px">Who enters</h4>
+      <p><span class="pill brand">First Guidde Created</span> <span class="pill brand">Guidde Published</span> <span class="pill brand">Teammate Invited</span> <span class="pill ghost">BDR Qualified</span><br><br>Any one signal pulls the contact in. <strong>Re-enrollment is on</strong>, so as signals stack over time, the contact re-enters and keeps advancing.</p>
+    </div>
+    <div class="card">
+      <span class="n">LOGIC</span>
+      <h4 style="margin-top:6px">What happens inside</h4>
+      <p><strong>Guard:</strong> if already SQL / Opportunity / Customer → stop (never move backward).<br>
+      <strong>Branch — SQL Qualified:</strong> 2+ activation events OR BDR-qualified → set <strong>SQL</strong>.<br>
+      <strong>Branch — otherwise:</strong> a single product action → set <strong>PQL</strong>.<br>
+      Every move stamps a <strong>Lifecycle Change Reason</strong> for a clean audit trail.</p>
+    </div>
+  </div>
+
+  <div class="note info">
+    <span class="nt">Why some lifecycle triggers aren't in the live build</span>
+    The full design also promotes <strong>Lead → MQL</strong> on marketing engagement. Those signals (marketing-email clicks, page-view tracking) live in <strong>Marketing Hub</strong>, outside this Sales Hub trial — so the live Workflow 1 focuses on the <strong>product-qualification path (PQL → SQL)</strong>, the differentiator of a PLG-hybrid model and fully buildable here. <a href="#tier" style="color:var(--brand);font-weight:600">Full breakdown in Tier &amp; Scope ↓</a>
+  </div>
+
+  <!-- WF2 VIDEO -->
+  <h3>5 · Workflow 2 — Deal Automation</h3>
+  <p>A contact-based workflow that creates or updates an associated deal when a contact becomes sales-ready — "judgment by human, creation by system." Its hardest job is <strong>de-duplication</strong>: never open a second deal for a contact who already has one open.</p>
+
+  <div class="video placeholder">
+    <div class="v-head">
+      <div class="v-play">▶</div>
+      <div class="v-title"><small>Guidde Walkthrough · Video 2</small>Workflow 2 — Deal Automation</div>
+      <a class="v-link" href="#" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+    </div>
+    <div class="v-note">
+      <b>What the video will show:</b> the dedupe branch (create vs. update), auto-stamped deal fields, and the validation rules. <em>Record it, upload to YouTube, then set the button's <code>href</code> to that link.</em>
+    </div>
+  </div>
+
+  <div class="cards c2">
+    <div class="card">
+      <span class="n">DEDUPE — THE BUILD-READY DETAIL</span>
+      <h4 style="margin-top:6px">Create vs. Update</h4>
+      <p>The workflow branches on a <strong>Count of Open Deals</strong> rollup on the contact:</p>
+      <p style="margin-top:8px"><span class="pill ok">= 0 → Create</span> a new deal at SQL, set Deal Source, owner = Contact Owner, auto-stamp ICP / Use Case / Product Interest / Amount / Close Date, create a 48h task.<br><br>
+      <span class="pill warn">≥ 1 → Update</span> the open deal: Demo → Discovery; Trial Started → Evaluation; refresh activity.</p>
+    </div>
+    <div class="card">
+      <span class="n">VALIDATION &amp; ACCURACY</span>
+      <h4 style="margin-top:6px">Guardrails on the data</h4>
+      <p>• Missing required field → "Incomplete deal" task + hold.<br>
+      • Idle beyond stage SLA → stale-deal alert.<br>
+      • Closed Lost → require structured <strong>Closed-Lost Reason</strong> + Competitor.<br>
+      • Closed Won → auto-trigger the CS handoff.</p>
+    </div>
+  </div>
+
+  <div class="note info">
+    <span class="nt">📹 Note for the Workflow 2 video</span>
+    The recording will call out, in-line: <b>(a)</b> which steps are native HubSpot behavior vs. custom-built, <b>(b)</b> that <code>Amount</code> is a static plan×seats demo default (a live pricing lookup needs CPQ/integration), and <b>(c)</b> the dedupe mechanism — and any Sales-Hub fallback if the open-deal rollup isn't natively available.
+  </div>
+
+  <h3>6 · How this improves the revenue engine</h3>
+  <div class="cards c4">
+    <div class="card"><div class="ico">↗</div><h4>Scalability</h4><p>Effort scales around <em>qualified</em> volume, not raw signups. The system, not memory, opens deals.</p></div>
+    <div class="card"><div class="ico">✓</div><h4>Data hygiene</h4><p>Forward-only lifecycle, dedupe rollup, progressive required fields, picklist loss reasons.</p></div>
+    <div class="card"><div class="ico">◷</div><h4>Forecasting</h4><p>Consistent stages + no duplicate deals + structured fields = trustworthy conversion &amp; weighted pipeline.</p></div>
+    <div class="card"><div class="ico">⚡</div><h4>Team efficiency</h4><p>Auto-routing, owner continuity, task creation, automatic CS handoff — no manual triage.</p></div>
+  </div>
+</section>
+
+<!-- TIER & SCOPE -->
+<section id="tier">
+  <div class="sec-num">Build Transparency</div>
+  <h2>Tier &amp; scope — what's built, what's documented, and why</h2>
+  <p class="sec-lead">A Sales-Ops reviewer who knows HubSpot will ask what runs on which tier. Here's the honest map. The build was done on a <strong>Sales Hub Professional trial</strong>; Marketing Hub was not available.</p>
+
+  <div class="tier-grid">
+    <div class="tier-col sales">
+      <h4>✓ Buildable on Sales Hub — and built / available</h4>
+      <ul>
+        <li><strong>Workflows</strong> (both automations)</li>
+        <li><strong>Custom lifecycle stage</strong> (PQL) between MQL and SQL</li>
+        <li><strong>Product-activation triggers</strong> — First Guidde / Published / Teammate Invited</li>
+        <li><strong>BDR-qualified</strong> property &amp; routing</li>
+        <li><strong>Rotate-owner</strong> &amp; internal notifications</li>
+        <li><strong>Forms</strong> &amp; product-signup property (scoped out of the demo, not blocked)</li>
+        <li>Native lifecycle sync: deal-created → Opportunity, deal-won → Customer</li>
+      </ul>
+    </div>
+    <div class="tier-col mkt">
+      <h4>✗ Needs Marketing Hub — documented as design</h4>
+      <ul>
+        <li><strong>Native lead scoring</strong> (<code>hubspotscore</code> is read-only; set only by the Marketing Hub scoring app)</li>
+        <li><strong>Marketing-email click</strong> tracking (the "≥2 clicks" MQL signal)</li>
+        <li><strong>Page-view / pricing-page</strong> behavior tracking</li>
+      </ul>
+      <div style="padding:6px 18px 14px">
+        <div class="note info" style="margin:6px 0 0">
+          <span class="nt">The workaround</span>
+          Workflow 1 reads the <strong>underlying product-activation events directly</strong> instead of a score — same signal, same outcome. With a full Marketing + Sales stack, the §1.2 point model is configured in <em>Settings → Lead Scoring</em> and the branch simply checks <code>HubSpot Score ≥ 50</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <span class="nt">The one-line framing</span>
+    Early-funnel triggers (form fills, marketing engagement, signup) span Sales + Marketing Hub, so some are only partially buildable on a Sales Hub trial. I focused the live build on the <strong>product-qualification mechanism (PQL → SQL)</strong> — the core of a PLG-hybrid model and fully buildable here. The complete lifecycle is detailed in this written design.
+  </div>
+</section>
+
+<!-- PART 2 -->
+<section id="part2" class="major">
+  <div class="part-divider"><span class="pd-badge">Part 2</span><span class="pd-rule"></span></div>
+  <h2>Sales Process Design</h2>
+  <p class="sec-lead">Pipeline structure with explicit entry/exit criteria, progressive required fields, and clear ownership.</p>
+
+  <h3>2-A · Pipeline structure</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Stage</th><th>Entry</th><th>Exit</th><th>Required (new at stage)</th><th>Owner</th><th>Automation</th></tr></thead>
+      <tbody>
+        <tr><td><b>SQL / New Opp</b></td><td>Demo booked, 2+ activations, or BDR-qualified</td><td>Discovery scheduled &amp; fit confirmed</td><td>Deal Name, Source, Amount, ICP Fit, Use Case</td><td class="owner">BDR → AE</td><td>Auto-create deal, dedupe, assign, 48h task</td></tr>
+        <tr><td><b>Discovery &amp; Demo</b></td><td>Discovery/demo booked</td><td>Need, stakeholders, timeline documented</td><td>Pain/Need, Decision Timeline, Champion</td><td class="owner">AE</td><td>Meeting logging; nudge at 5 days idle</td></tr>
+        <tr><td><b>Evaluation / Trial</b></td><td>Guided eval/POC begins</td><td>Success criteria met &amp; path confirmed</td><td>Success Criteria, Active Users, Technical Fit</td><td class="owner">AE + CS</td><td>Low-usage alert; CS onboarding ping</td></tr>
+        <tr><td><b>Proposal &amp; Neg.</b></td><td>Pricing/proposal sent</td><td>Verbal agreement reached</td><td>Confirmed ACV, Plan/Seats, Procurement</td><td class="owner">AE</td><td>Proposal reminders; stuck-deal alert at 14d</td></tr>
+        <tr><td><b>Verbal Commit</b></td><td>Verbal yes; contract out</td><td>Signed or stalled</td><td>Contract Sent Date, Close Date, Signatory</td><td class="owner">AE</td><td>Signature follow-up tasks</td></tr>
+        <tr><td><b>Closed Won</b></td><td>Deal won</td><td>Terminal</td><td>Final ACV, Seats, CS Owner</td><td class="owner">AE → CS</td><td>Onboarding handoff fires</td></tr>
+        <tr><td><b>Closed Lost</b></td><td>Deal lost</td><td>Terminal</td><td>Closed-Lost Reason, Competitor, Re-engage</td><td class="owner">AE</td><td>Stamp reason; set re-engage date</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13.5px;color:var(--muted)"><strong>Why it works:</strong> progressive required fields (not everything at stage 1) reduce junk data entered just to advance a record; objective exit criteria beat intuition for forecast quality; ownership is explicit (BDR qualifies → AE owns → CS supports &amp; retains).</p>
+
+  <h3>2-B · Deal creation</h3>
+  <div class="cards c3">
+    <div class="card"><h4>Who &amp; when</h4><p>The <strong>BDR makes the qualification call</strong> (ICP fit + product behavior + use-case clarity + buying group + urgency). HubSpot then <strong>creates the deal automatically</strong> — no missed opportunities, no pipeline flooding.</p></div>
+    <div class="card"><h4>Mandatory at creation</h4><p>Deal Source · Primary Contact · ICP Fit · Use Case · Amount/ACV · Buying Group · Timeline · Product Interest.</p></div>
+    <div class="card"><h4>Validation</h4><p>No duplicate open deals (rollup); Closed-Lost Reason is a picklist; required fields increase by stage; incomplete records block progression.</p></div>
+  </div>
+
+  <h3>2-C · Risks, bottlenecks &amp; tooling</h3>
+  <div class="cards c3">
+    <div class="card"><div class="ico">⚠</div><h4>Operational risk</h4><p>PLG-hybrid is fragile if qualification is loose — <strong>over-routing</strong> wastes rep time, <strong>under-routing</strong> misses intent. Mitigation: explicit activation rules + SLA monitoring.</p></div>
+    <div class="card"><div class="ico">⌛</div><h4>The bottleneck</h4><p>The <strong>Trial/POC → commercial</strong> transition. Prospects can <em>use</em> Guidde without revealing buying process. Evaluation must be a structured checkpoint — success criteria, active-user counts, CS onboarding.</p></div>
+    <div class="card"><div class="ico">🛠</div><h4>Tooling</h4><p><strong>Enrichment</strong> (Clearbit/Apollo) for ICP firmographics; <strong>dedup/data-quality monitor</strong> (HubSpot Data Quality / Insycle); <strong>SLA alerting</strong> in workflows.</p></div>
+  </div>
+</section>
+
+<!-- PART 3 -->
+<section id="part3" class="major">
+  <div class="part-divider"><span class="pd-badge">Part 3</span><span class="pd-rule"></span></div>
+  <h2>Dashboard &amp; KPI Reporting</h2>
+  <p class="sec-lead">The dashboard exists to answer four leadership questions fast: who performs best, <strong>what motions generate revenue</strong>, where are the bottlenecks, and what will increase revenue. Below is an illustrative build on sample data.</p>
+
+  <!-- DASHBOARD -->
+  <div class="dash">
+    <div class="dash-inner">
+      <div class="dash-bar">
+        <div class="dt"><span class="d-dot">●</span> guidde RevOps — Revenue Dashboard</div>
+        <div class="dp">Q2 2024 · Illustrative data</div>
+      </div>
+      <div class="dash-body">
+        <div class="kpi-row">
+          <div class="kpi"><div class="kl">Open Pipeline</div><div class="kv">$2.85<span class="u">M</span></div><div class="ks">116 open deals</div><span class="kb">↑ 18% vs Q1</span></div>
+          <div class="kpi"><div class="kl">Commit / Best-Case</div><div class="kv">$412<span class="u">K / $687K</span></div><div class="ks">vs $500K team target</div><span class="kb">5.7× coverage</span></div>
+          <div class="kpi"><div class="kl">Closed Won (QTD)</div><div class="kv">$318<span class="u">.5K</span></div><div class="ks">18 deals · 64% of target</div><span class="kb">↑ 22% YoY</span></div>
+          <div class="kpi"><div class="kl">Avg Sales Cycle</div><div class="kv">34<span class="u"> days</span></div><div class="ks">create → won</div><span class="kb">↓ 4 days</span></div>
+        </div>
+
+        <div class="dgrid">
+          <div class="dcard">
+            <div class="dct">Pipeline &amp; Forecasting</div>
+            <div class="dcs">Open pipeline by stage ($K)</div>
+            <div class="chart-h"><canvas id="cPipe"></canvas></div>
+          </div>
+          <div class="dcard">
+            <div class="dct">Revenue by Motion <span class="pill brand" style="font-size:9px">answers Q2</span></div>
+            <div class="dcs">Closed Won $ by deal source (QTD)</div>
+            <div class="chart-h"><canvas id="cMot"></canvas></div>
+            <div class="mini">
+              <div class="mc plg"><div class="mn">PLG</div><div class="mr"><span>Won</span><b>$178K</b></div><div class="mr"><span>Win</span><b>31%</b></div><div class="mr"><span>Avg</span><b>$9.9K</b></div></div>
+              <div class="mc inb"><div class="mn">Inbound</div><div class="mr"><span>Won</span><b>$102K</b></div><div class="mr"><span>Win</span><b>28%</b></div><div class="mr"><span>Avg</span><b>$17K</b></div></div>
+              <div class="mc out"><div class="mn">Outbound</div><div class="mr"><span>Won</span><b>$38.5K</b></div><div class="mr"><span>Win</span><b>18%</b></div><div class="mr"><span>Avg</span><b>$19.3K</b></div></div>
+            </div>
+          </div>
+          <div class="dcard">
+            <div class="dct">Sales Performance</div>
+            <div class="dcs">Rep quota attainment — QTD</div>
+            <table class="dtbl">
+              <thead><tr><th>Rep</th><th>Won $</th><th>Quota</th><th>Attain</th><th>Win</th></tr></thead>
+              <tbody>
+                <tr><td><span class="av"><span class="dot-av" style="background:var(--brand)">SC</span>S. Chen</span></td><td>$127K</td><td>$150K</td><td style="color:var(--green);font-weight:700">85%</td><td>34%</td></tr>
+                <tr><td><span class="av"><span class="dot-av" style="background:var(--charcoal)">MW</span>M. Webb</span></td><td>$89.5K</td><td>$120K</td><td style="color:var(--amber);font-weight:700">75%</td><td>28%</td></tr>
+                <tr><td><span class="av"><span class="dot-av" style="background:var(--gold)">PN</span>P. Nair</span></td><td>$62K</td><td>$100K</td><td style="color:var(--amber);font-weight:700">62%</td><td>31%</td></tr>
+                <tr><td><span class="av"><span class="dot-av" style="background:var(--slate)">TR</span>T. Ross</span></td><td>$40K</td><td>$80K</td><td style="color:var(--neg);font-weight:700">50%</td><td>22%</td></tr>
+              </tbody>
+            </table>
+            <div class="dcs" style="margin-top:12px">Closed-lost reasons</div>
+            <div class="chart-h sm"><canvas id="cLost"></canvas></div>
+          </div>
+          <div class="dcard">
+            <div class="dct">Productivity &amp; Efficiency</div>
+            <div class="dcs">SLAs &amp; funnel conversion</div>
+            <div class="eff">
+              <div class="e"><div class="el">PQL → 1st action</div><div class="ev g">4.2h</div><div class="es">target &lt;8h ✓</div></div>
+              <div class="e"><div class="el">Follow-up SLA</div><div class="ev a">78%</div><div class="es">target &gt;90% ⚠</div></div>
+              <div class="e"><div class="el">Meetings / rep / wk</div><div class="ev">18</div><div class="es">team avg</div></div>
+              <div class="e"><div class="el">Won handoff complete</div><div class="ev g">91%</div><div class="es">CS fields done</div></div>
+            </div>
+            <div class="dcs" style="margin-top:14px">Stage conversion rates</div>
+            <div class="chart-h sm"><canvas id="cConv"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>How the dashboard answers each leadership question</h3>
+  <div class="tbl-wrap qmap">
+    <table>
+      <thead><tr><th>Leadership question</th><th>Answered by</th></tr></thead>
+      <tbody>
+        <tr><td>Who is performing best?</td><td>Sales Performance — Won $, win rate, quota attainment by rep</td></tr>
+        <tr><td><b>What motions generate the most revenue?</b></td><td><b>Revenue by Motion</b> — Won $, win rate, avg deal &amp; pipeline by Deal Source</td></tr>
+        <tr><td>Where are the bottlenecks?</td><td>Avg days in stage + stage-to-stage conversion + funnel</td></tr>
+        <tr><td>What will increase revenue?</td><td>Conversion/SLA gaps + loss-reason patterns + coverage vs target</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note info">
+    <span class="nt">Quota vs. Target — a deliberate distinction</span>
+    <strong>Quota</strong> = an individual rep's number (rep views). <strong>Target</strong> = the collective quarterly revenue goal (team views). The dashboard keeps them separate so leadership never conflates one rep's miss with a team-level gap.
+  </div>
+
+  <p style="font-size:13.5px;color:var(--muted);margin-top:14px">An interactive version of this dashboard — with working period / product / motion / rep / region filters — is included as <code>revenue-dashboard-mockup.html</code>.</p>
+</section>
+
+<!-- CLOSING -->
+<div class="closing">
+  <h2>One coherent operating model</h2>
+  <p>Automate what is objective, standardize what is repetitive, and <span class="acc">preserve human judgment where context matters.</span></p>
+  <p>For a PLG-hybrid SaaS like Guidde, that combination improves scalability, data hygiene, forecasting accuracy, and team efficiency at once — and it's buildable in HubSpot today, with every tier decision documented openly.</p>
+</div>
+
+</div>
+
+<footer>
+  <div class="foot-logo">guidde<span style="color:var(--brand)">.</span></div>
+  Sales Operations Manager — Case Study · Illustrative data, not real Guidde figures · Pairs with 2 guidde walkthrough videos
+</footer>
+
+<script>
+Chart.defaults.font.family="-apple-system,'Segoe UI',system-ui,sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color="#9A8E90";
+const C={red:'#E11B22',redL:'rgba(225,27,34,.55)',charcoal:'#2B2B2E',gold:'#E0982F',slate:'#8A8E99',grid:'#F1E5E5'};
+const fade=(h,a)=>h+Math.round(a*255).toString(16).padStart(2,'0');
+
+new Chart(cPipe,{type:'bar',data:{labels:['SQL','Discovery','Evaluation','Proposal','Verbal'],datasets:[{data:[892,621.5,487,380,294],backgroundColor:[fade(C.red,.85),fade(C.red,.68),fade(C.red,.52),fade(C.red,.38),fade(C.red,.26)],borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' $'+c.parsed.x+'K'}}},scales:{x:{grid:{color:C.grid},ticks:{callback:v=>'$'+v+'K'}},y:{grid:{display:false}}}}});
+
+new Chart(cMot,{type:'bar',data:{labels:['PLG','Inbound','Outbound'],datasets:[{data:[178,102,38.5],backgroundColor:[C.red,C.charcoal,C.gold],borderRadius:7}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' $'+c.parsed.y+'K won'}}},scales:{x:{grid:{display:false}},y:{grid:{color:C.grid},ticks:{callback:v=>'$'+v+'K'}}}}});
+
+new Chart(cLost,{type:'doughnut',data:{labels:['No Budget','Competitor','No Decision','Poor Fit'],datasets:[{data:[38,27,22,13],backgroundColor:[C.red,C.gold,C.slate,'#D9C7C7'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'right',labels:{boxWidth:9,padding:7,font:{size:10}}},tooltip:{callbacks:{label:c=>' '+c.parsed+'%'}}}}});
+
+new Chart(cConv,{type:'bar',data:{labels:['SQL→Disc','Disc→Eval','Eval→Prop','Prop→Verbal','Verbal→Won'],datasets:[{data:[66,61,63,58,72],backgroundColor:c=>{const v=[66,61,63,58,72][c.dataIndex];return v>=65?C.red:v>=60?fade(C.red,.6):C.gold},borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.y+'%'}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:C.grid},max:80,ticks:{callback:v=>v+'%'}}}}});
+</script>
+</body>
+</html>
