@@ -292,6 +292,15 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     </div>
   </div>
 
+  <div class="note info">
+    <span class="nt">Why PQL — not MQL — is the gate</span>
+    In a PLG-hybrid model an <strong>MQL</strong> (marketing engagement) is a far weaker signal than a <strong>PQL</strong> (someone actually using the product). Investing heavily in an MQL→PQL hand-off risks turning MQL into a vanity metric. So MQL is kept lightweight and <strong>PQL is the real qualification gate</strong> — the SQL routes (product accumulation OR BDR/demo intent) are what earn a rep's time. <em>An alternative worth discussing: collapsing to a single "Intent-Qualified Lead" — trial started OR demo requested — which also covers outbound leads who talk before they trial.</em>
+  </div>
+  <div class="note warn">
+    <span class="nt">Implementation dependency — how product signals reach HubSpot</span>
+    A clean PQL is only as good as the data plumbing behind it. Activation events (First Guidde Created, etc.) originate in the <strong>product</strong>, so they must be piped into HubSpot reliably — via a native integration, a CDP/event pipeline (e.g., Segment), or reverse-ETL from the warehouse. SaaS orgs are notorious for weak product-analytics↔CRM integration and CRM hygiene, so <strong>this data architecture is part of the implementation plan, not an afterthought.</strong>
+  </div>
+
   <h3>3 · The deal pipeline — the opportunity</h3>
   <p>A new-business pipeline that starts at SQL, not at "lead." It begins when product or high-intent signals justify sales engagement — not when a rep decides to open a deal.</p>
   <div class="flow">
@@ -302,6 +311,11 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     <div class="step"><div class="s-stage">Verbal Commit</div><div class="s-desc">85%</div></div>
     <div class="step hl"><div class="s-stage">Closed Won</div><div class="s-desc">100%</div></div>
     <div class="step"><div class="s-stage">Closed Lost</div><div class="s-desc">0%</div></div>
+  </div>
+
+  <div class="note info">
+    <span class="nt">Two implementation notes on the pipeline</span>
+    <strong>Stage weights</strong> shown are illustrative defaults — in a real build they'd be <strong>calibrated to Guidde's historic stage-level win rates</strong> (if, say, 50% of deals reaching Evaluation close, that weight rises above 45%). <strong>Deal creation vs. "Opportunity":</strong> the deal is created at the <strong>SQL</strong> stage, but the contact's lifecycle flips to <strong>Opportunity</strong> only when the deal advances <strong>SQL → Discovery</strong> — so "Opportunity" means a deal actively being worked, not merely a record that exists.
   </div>
 
   <!-- WF1 VIDEO -->
@@ -470,7 +484,7 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 <section id="part3" class="major">
   <div class="part-divider"><span class="pd-badge">Part 3</span><span class="pd-rule"></span></div>
   <h2>Dashboard &amp; KPI Reporting</h2>
-  <p class="sec-lead">The dashboard exists to answer four leadership questions fast: who performs best, <strong>what motions generate revenue</strong>, where are the bottlenecks, and what will increase revenue. Below is an illustrative build on sample data.</p>
+  <p class="sec-lead">The dashboard exists to answer four leadership questions fast: who performs best, <strong>which acquisition channels generate the most revenue</strong>, where are the bottlenecks, and what will increase revenue. Below is an illustrative build on sample data.</p>
 
   <!-- DASHBOARD -->
   <div class="dash">
@@ -494,8 +508,8 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
             <div class="chart-h"><canvas id="cPipe"></canvas></div>
           </div>
           <div class="dcard">
-            <div class="dct">Revenue by Motion <span class="pill brand" style="font-size:9px">answers Q2</span></div>
-            <div class="dcs">Closed Won $ by deal source (QTD)</div>
+            <div class="dct">Revenue by Source <span class="pill brand" style="font-size:9px">answers Q2</span></div>
+            <div class="dcs">Closed Won $ by acquisition source (QTD)</div>
             <div class="chart-h"><canvas id="cMot"></canvas></div>
             <div class="mini">
               <div class="mc plg"><div class="mn">PLG</div><div class="mr"><span>Won</span><b>$178K</b></div><div class="mr"><span>Win</span><b>31%</b></div><div class="mr"><span>Avg</span><b>$9.9K</b></div></div>
@@ -535,13 +549,18 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     </div>
   </div>
 
+  <div class="note info">
+    <span class="nt">On framing &amp; feasibility</span>
+    <strong>PLG is the overarching motion</strong> — inbound, outbound, and referral are channels that <em>feed</em> it, not parallel alternatives (even a sales-led org runs inbound and outbound). So this view segments revenue by <strong>acquisition source</strong>, and the sharper question is <strong>which source produces the most PQLs and pipeline</strong>. On feasibility: most KPIs here build natively in HubSpot reports; a few polished cuts would live in a BI layer fed by HubSpot — this mockup illustrates the target <em>layout</em>, not a claim that every view is a stock HubSpot chart.
+  </div>
+
   <h3>How the dashboard answers each leadership question</h3>
   <div class="tbl-wrap qmap">
     <table>
       <thead><tr><th>Leadership question</th><th>Answered by</th></tr></thead>
       <tbody>
         <tr><td>Who is performing best?</td><td>Sales Performance — Won $, win rate, quota attainment by rep</td></tr>
-        <tr><td><b>What motions generate the most revenue?</b></td><td><b>Revenue by Motion</b> — Won $, win rate, avg deal &amp; pipeline by Deal Source</td></tr>
+        <tr><td><b>Which channels/sources generate the most revenue?</b></td><td><b>Revenue by Source</b> — Won $, win rate, avg deal &amp; pipeline by acquisition source</td></tr>
         <tr><td>Where are the bottlenecks?</td><td>Avg days in stage + stage-to-stage conversion + funnel</td></tr>
         <tr><td>What will increase revenue?</td><td>Conversion/SLA gaps + loss-reason patterns + coverage vs target</td></tr>
       </tbody>
