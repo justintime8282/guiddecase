@@ -146,6 +146,8 @@ td b,td strong{color:var(--ink)}
 .tier-col li::before{content:'';position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:50%}
 .tier-col.sales li::before{background:var(--green)}
 .tier-col.mkt li::before{background:var(--neg)}
+.tier-col.other h4{background:var(--amber-bg);color:var(--amber)}
+.tier-col.other li::before{background:var(--amber)}
 
 /* DASHBOARD */
 .dash{background:var(--charcoal);border-radius:18px;padding:8px;margin:18px 0;box-shadow:var(--shadow-lg);position:relative}
@@ -436,9 +438,14 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     </div>
   </div>
 
-  <div class="note info">
-    <span class="nt">Documented as design — by choice or other tiers</span>
-    A few pieces are specified in the written design rather than built live. <strong>Workflow 1:</strong> the marketing → MQL path (email-click and page-view signals are Marketing Hub). <strong>Workflow 2:</strong> an open-deals-only de-dupe rollup (needs Operations Hub — the build uses HubSpot's native associated-deal count); the full deal-stage progression (Demo → Discovery, Trial → Evaluation), which belongs in a deal-based workflow; the validation guardrails (incomplete-deal hold, stale-deal alert, CS handoff on won); and a live <code>Amount</code> lookup (plan × seats / CPQ — the build uses a static demo default).
+  <div class="tier-col other" style="margin-top:14px">
+    <h4>◔ Documented by choice or other tiers — Workflow 2</h4>
+    <ul>
+      <li><strong>Open-deals de-dupe rollup</strong> — needs Operations Hub; the build uses HubSpot's native associated-deal count</li>
+      <li><strong>Full deal-stage progression</strong> (Demo → Discovery, Trial → Evaluation) — belongs in a deal-based workflow</li>
+      <li><strong>Validation guardrails</strong> — incomplete-deal hold, stale-deal alert, CS handoff on won</li>
+      <li><strong>Live Amount lookup</strong> (plan × seats / CPQ) — the build uses a static demo default</li>
+    </ul>
   </div>
 
   <div class="note warn">
