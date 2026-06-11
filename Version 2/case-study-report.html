@@ -19,6 +19,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+.hero,section[id]{scroll-margin-top:70px}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
 /* HEADER */
@@ -89,7 +90,7 @@ strong{color:var(--ink);font-weight:600}
 .pill.ghost{background:#F1EEEE;color:var(--text)}
 
 /* FLOW DIAGRAM */
-.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:18px 0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap;margin:18px 0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
 .flow .step{flex:1;min-width:130px;padding:16px 14px;text-align:center;border-right:1px solid var(--border-soft);position:relative}
 .flow .step:last-child{border-right:none}
 .flow .step .s-stage{font-weight:800;color:var(--ink);font-size:14px}
@@ -137,9 +138,9 @@ td b,td strong{color:var(--ink)}
 .tier-col.sales h4{background:var(--green-bg);color:var(--green)}
 .tier-col.mkt h4{background:var(--neg-bg);color:var(--neg)}
 .tier-col ul{list-style:none;padding:8px 18px 14px}
-.tier-col li{font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--border-soft);display:flex;gap:8px;align-items:flex-start}
+.tier-col li{font-size:13.5px;line-height:1.5;padding:6px 0 6px 16px;border-bottom:1px solid var(--border-soft);position:relative}
 .tier-col li:last-child{border-bottom:none}
-.tier-col li::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;margin-top:7px}
+.tier-col li::before{content:'';position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:50%}
 .tier-col.sales li::before{background:var(--green)}
 .tier-col.mkt li::before{background:var(--neg)}
 
@@ -211,6 +212,7 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     <span class="brand-tag">Sales Operations Manager — Case Study</span>
   </div>
   <nav class="nav">
+    <a href="#intro">Intro</a>
     <a href="#assumptions">Assumptions</a>
     <a href="#part1">Part 1 · Automation</a>
     <a href="#tier">Tier &amp; Scope</a>
@@ -220,10 +222,10 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 </header>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" id="intro">
   <span class="kicker">PLG-Hybrid Revenue Operations</span>
   <h1>A scalable Sales Ops system for Guidde's PLG-hybrid motion</h1>
-  <p class="thesis"><em>Automate what is objective, preserve human judgment where context matters.</em> This submission turns raw product usage into sales-ready pipeline — with a HubSpot build, a process design, and a leadership dashboard that all answer to the same model.</p>
+  <p class="thesis"><em>Automate what is objective, preserve human judgment where context matters.</em> This recommendation will turn raw product usage into sales-ready pipeline — with a HubSpot build, a process design, and a leadership dashboard that all answer to the same model.</p>
   <div class="meta">
     <span>Author: <strong>Justin Chun</strong></span>
     <span>Built on HubSpot Sales Hub Pro</span>
@@ -243,10 +245,10 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 <section id="assumptions">
   <div class="sec-num">Section 0</div>
   <h2>Assumptions &amp; operating logic</h2>
-  <p class="sec-lead">The assignment asks for my logic <em>and</em> assumptions. Everything downstream follows from these.</p>
+  <p class="sec-lead">Here are the logic and assumptions behind the case — everything downstream follows from them.</p>
   <div class="assume">
     <div class="a"><b>1 · GTM motion</b>Guidde runs a <strong>PLG-hybrid</strong> motion — low-friction adoption generates intent, and the revenue team converts the right users into pipeline, customers, and expansion.</div>
-    <div class="a"><b>2 · Product usage is a first-class signal</b>Qualification is anchored on a <strong>Product-Qualified Lead (PQL)</strong>, alongside (not instead of) marketing/sales signals.</div>
+    <div class="a"><b>2 · Product usage is a first-class signal</b>Qualification is anchored on a <strong>Product-Qualified Lead (PQL)</strong>, alongside marketing/sales signals.</div>
     <div class="a"><b>3 · Person ≠ opportunity</b><strong>Lifecycle stage</strong> (where is this person) and <strong>deal stage</strong> (where is this opportunity) are separate-but-connected systems.</div>
     <div class="a"><b>4 · Ownership spans BDR · AE · CS</b>BDR qualifies &amp; routes; AE owns the active deal; CS supports trial and owns post-sale + expansion.</div>
     <div class="a"><b>5 · Hybrid deal creation</b>A human makes the qualification call, then the system creates and standardizes the deal — "judgment by human, creation by system."</div>
