@@ -20,6 +20,9 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 .hero,section[id]{scroll-margin-top:70px}
+body{overflow-x:clip}
+section.tint{position:relative}
+section.tint::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:calc(50% - 50vw);width:100vw;background:#FCEAEB}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
 /* HEADER */
@@ -56,7 +59,7 @@ section.major > h2{margin-top:2px}
 .sec-num{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:8px}
 h2{font-size:30px;color:var(--ink);letter-spacing:-.6px;font-weight:800;margin-bottom:8px}
 .sec-lead{font-size:16px;color:var(--text);max-width:780px;margin-bottom:26px}
-h3{font-size:19px;color:var(--ink);font-weight:700;margin:28px 0 12px;letter-spacing:-.2px}
+h3{font-size:19px;color:var(--ink);font-weight:700;margin:40px 0 14px;letter-spacing:-.2px;border-left:3px solid var(--brand);padding-left:13px}
 h4{font-size:15px;color:var(--ink);font-weight:700;margin:18px 0 8px}
 p{margin-bottom:12px}
 strong{color:var(--ink);font-weight:600}
@@ -214,8 +217,8 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
   <nav class="nav">
     <a href="#intro">Intro</a>
     <a href="#assumptions">Assumptions</a>
-    <a href="#part1">Part 1 · Automation</a>
-    <a href="#tier">Tier &amp; Scope</a>
+    <a href="#part1">Part 1-A · Automation</a>
+    <a href="#tier">Part 1-B · Tier &amp; Scope</a>
     <a href="#part2">Part 2 · Process</a>
     <a href="#part3">Part 3 · Dashboard</a>
   </nav>
@@ -224,8 +227,8 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 <!-- HERO -->
 <div class="hero" id="intro">
   <span class="kicker">PLG-Hybrid Revenue Operations</span>
-  <h1>A scalable Sales Ops system for Guidde's PLG-hybrid motion</h1>
-  <p class="thesis"><em>Automate what is objective, preserve human judgment where context matters.</em> This recommendation will turn raw product usage into sales-ready pipeline — with a HubSpot build, a process design, and a leadership dashboard that all answer to the same model.</p>
+  <h1>A scalable Sales Ops system for<br>Guidde's PLG-hybrid motion</h1>
+  <p class="thesis"><em>Automate what is objective, preserve human judgment where context matters.</em><br>This recommendation will turn raw product usage into sales-ready pipeline — with a HubSpot build, a process design, and a leadership dashboard that all answer to the same model.</p>
   <div class="meta">
     <span>Author: <strong>Justin Chun</strong></span>
     <span>Built on HubSpot Sales Hub Pro</span>
@@ -243,8 +246,7 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 
 <!-- ASSUMPTIONS -->
 <section id="assumptions">
-  <div class="sec-num">Section 0</div>
-  <h2>Assumptions &amp; operating logic</h2>
+  <h2>Assumptions</h2>
   <p class="sec-lead">Here are the logic and assumptions behind the case — everything downstream follows from them.</p>
   <div class="assume">
     <div class="a"><b>1 · GTM motion</b>Guidde runs a <strong>PLG-hybrid</strong> motion — low-friction adoption generates intent, and the revenue team converts the right users into pipeline, customers, and expansion.</div>
@@ -258,10 +260,10 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 </section>
 
 <!-- PART 1 -->
-<section id="part1" class="major">
-  <div class="part-divider"><span class="pd-badge">Part 1</span><span class="pd-rule"></span></div>
+<section id="part1" class="major tint">
+  <div class="part-divider"><span class="pd-badge">Part 1-A</span><span class="pd-rule"></span></div>
   <h2>HubSpot Workflow &amp; Automation</h2>
-  <p class="sec-lead">Two systems running side by side: a <strong>contact lifecycle</strong> (the person) and a <strong>deal pipeline</strong> (the opportunity), connected by automation.</p>
+  <p class="sec-lead" style="max-width:none">Two systems running side by side: a <strong>contact lifecycle</strong> (the person) and a <strong>deal pipeline</strong> (the opportunity), connected by automation.</p>
 
   <h3>1 · The lifecycle model — the person</h3>
   <p>I manage the contact lifecycle separately from the deal pipeline. <strong>PQL</strong> sits at the center because Guidde's strongest intent comes from <strong>product behavior</strong>, not just form fills — a contact becomes valuable not by downloading a PDF, but by doing something real in the product.</p>
@@ -404,8 +406,8 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 </section>
 
 <!-- TIER & SCOPE -->
-<section id="tier">
-  <div class="sec-num">Build Transparency</div>
+<section id="tier" class="tint">
+  <div class="sec-num">Part 1-B</div>
   <h2>Tier &amp; scope — what's built, what's documented, and why</h2>
   <p class="sec-lead">A Sales-Ops reviewer who knows HubSpot will ask what runs on which tier. Here's the honest map. The build was done on a <strong>Sales Hub Professional trial</strong>; Marketing Hub was not available.</p>
 
@@ -483,7 +485,7 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 </section>
 
 <!-- PART 3 -->
-<section id="part3" class="major">
+<section id="part3" class="major tint">
   <div class="part-divider"><span class="pd-badge">Part 3</span><span class="pd-rule"></span></div>
   <h2>Dashboard &amp; KPI Reporting</h2>
   <p class="sec-lead">The dashboard exists to answer four leadership questions fast: who performs best, <strong>which acquisition channels generate the most revenue</strong>, where are the bottlenecks, and what will increase revenue. Below is an illustrative build on sample data.</p>
@@ -562,19 +564,12 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
       <thead><tr><th>Leadership question</th><th>Answered by</th></tr></thead>
       <tbody>
         <tr><td>Who is performing best?</td><td>Sales Performance — Won $, win rate, quota attainment by rep</td></tr>
-        <tr><td><b>Which channels/sources generate the most revenue?</b></td><td><b>Revenue by Source</b> — Won $, win rate, avg deal &amp; pipeline by acquisition source</td></tr>
+        <tr><td>Which channels/sources generate the most revenue?</td><td>Revenue by Source — Won $, win rate, avg deal &amp; pipeline by acquisition source</td></tr>
         <tr><td>Where are the bottlenecks?</td><td>Avg days in stage + stage-to-stage conversion + funnel</td></tr>
         <tr><td>What will increase revenue?</td><td>Conversion/SLA gaps + loss-reason patterns + coverage vs target</td></tr>
       </tbody>
     </table>
   </div>
-
-  <div class="note info">
-    <span class="nt">Quota vs. Target — a deliberate distinction</span>
-    <strong>Quota</strong> = an individual rep's number (rep views). <strong>Target</strong> = the collective quarterly revenue goal (team views). The dashboard keeps them separate so leadership never conflates one rep's miss with a team-level gap.
-  </div>
-
-  <p style="font-size:13.5px;color:var(--muted);margin-top:14px">An interactive version of this dashboard — with working period / product / motion / rep / region filters — is included as <code>revenue-dashboard-mockup.html</code>.</p>
 </section>
 
 <!-- CLOSING -->
