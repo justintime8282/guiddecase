@@ -370,17 +370,17 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
       <span class="v-link off" aria-disabled="true" title="To be added once recorded">▶ Not available yet · to be updated</span>
     </div>
     <div class="v-note">
-      <b>What the video will show:</b> the dedupe branch (create vs. update), auto-stamped deal fields, and the validation rules. <em>Recording in progress — this walkthrough will be added shortly.</em>
+      <b>What the video shows:</b> the live build — enrollment, the de-dupe branch, the create-deal path (with task &amp; owner notification), and the update path. <em>Link to be added.</em>
     </div>
   </div>
 
   <div class="cards c2">
     <div class="card">
-      <span class="n">DEDUPE — THE BUILD-READY DETAIL</span>
+      <span class="n">DEDUPE — THE CORE</span>
       <h4 style="margin-top:6px">Create vs. Update</h4>
-      <p>The workflow branches on a <strong>Count of Open Deals</strong> rollup on the contact:</p>
-      <p style="margin-top:8px"><span class="pill ok">= 0 → Create</span> a new deal at SQL, set Deal Source, owner = Contact Owner, auto-stamp ICP / Use Case / Product Interest / Amount / Close Date, create a 48h task.<br><br>
-      <span class="pill warn">≥ 1 → Update</span> the open deal: Demo → Discovery; Trial Started → Evaluation; refresh activity.</p>
+      <p>Before creating anything, the workflow checks whether the contact already has an associated deal:</p>
+      <p style="margin-top:8px"><span class="pill ok">none → Create</span> a new deal at SQL, owner = Contact Owner, set Deal Source &amp; Amount, <strong>associate it to the contact</strong>, create a 48h task, notify the owner.<br><br>
+      <span class="pill warn">has one → Update</span> the existing deal — in the full design: Demo → Discovery, Trial → Evaluation; built here as a review task.</p>
     </div>
     <div class="card">
       <span class="n">VALIDATION &amp; ACCURACY</span>
@@ -393,8 +393,9 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
   </div>
 
   <div class="note info">
-    <span class="nt">📹 Note for the Workflow 2 video</span>
-    The recording will call out, in-line: <b>(a)</b> which steps are native HubSpot behavior vs. custom-built, <b>(b)</b> that <code>Amount</code> is a static plan×seats demo default (a live pricing lookup needs CPQ/integration), and <b>(c)</b> the dedupe mechanism — and any Sales-Hub fallback if the open-deal rollup isn't natively available.
+    <span class="nt">What's built live vs. documented as design</span>
+    <strong>Built in HubSpot:</strong> enrollment (SQL / BDR-qualified), the de-dupe branch, the create-deal path (deal at SQL · owner · source · amount · association) with a 48-hour task and an owner notification, and a review task on the update path.<br><br>
+    <strong>Documented as design (tier / scope):</strong> de-dupe ideally keys off an <em>open-deals</em> rollup, which needs <strong>Operations Hub</strong> — so the build uses the native <code>Number of Associated Deals</code> as the equivalent; <code>Amount</code> is a static demo default (production = plan × seats / CPQ lookup); the full deal-stage progression (Demo → Discovery, Trial → Evaluation) belongs in a <strong>deal-based workflow</strong>; and the validation guardrails (incomplete-deal hold, stale-deal alert, CS handoff on won) sit alongside as separate automations.
   </div>
 
   <h3>6 · How this improves the revenue engine</h3>
