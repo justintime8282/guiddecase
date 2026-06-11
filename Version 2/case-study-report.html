@@ -19,7 +19,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-.hero,section[id]{scroll-margin-top:70px}
+.hero,section[id],h3[id]{scroll-margin-top:70px}
 body{overflow-x:clip}
 section.tint{position:relative}
 section.tint::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:calc(50% - 50vw);width:100vw;background:#FDF2F3}
@@ -392,9 +392,8 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
   </div>
 
   <div class="note info">
-    <span class="nt">What's built live vs. documented as design</span>
-    <strong>Built in HubSpot:</strong> enrollment (SQL / BDR-qualified), the de-dupe branch, the create-deal path (deal at SQL · owner · source · amount · association) with a 48-hour task and an owner notification, and a review task on the update path.<br><br>
-    <strong>Documented as design (tier / scope):</strong> de-dupe ideally keys off an <em>open-deals</em> rollup, which needs <strong>Operations Hub</strong> — so the build uses the native <code>Number of Associated Deals</code> as the equivalent; <code>Amount</code> is a static demo default (production = plan × seats / CPQ lookup); the full deal-stage progression (Demo → Discovery, Trial → Evaluation) belongs in a <strong>deal-based workflow</strong>; and the validation guardrails (incomplete-deal hold, stale-deal alert, CS handoff on won) sit alongside as separate automations.
+    <span class="nt">Why some of this is documented, not built</span>
+    The live build covers enrollment, de-dupe, and the create-deal path (with task and owner notification). The heavier pieces — the full deal-stage progression, an open-deals rollup, and the validation guardrails — are specified in the design. <a href="#tier" style="color:var(--brand);font-weight:600">Full build-vs-documented map in Tier &amp; scope ↓</a>
   </div>
 
   <h3>6 · How this improves the revenue engine</h3>
@@ -405,7 +404,7 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
     <div class="card"><div class="ico">⚡</div><h4>Team efficiency</h4><p>Auto-routing, owner continuity, task creation, automatic CS handoff — no manual triage.</p></div>
   </div>
 
-  <h3>7 · Tier &amp; scope — what's built vs documented</h3>
+  <h3 id="tier">7 · Tier &amp; scope — what's built vs documented</h3>
   <p class="sec-lead">A Sales-Ops reviewer who knows HubSpot will ask what runs on which tier. Here's the honest map. The build was done on a <strong>Sales Hub Professional trial</strong>; Marketing Hub was not available.</p>
 
   <div class="tier-grid">
@@ -435,6 +434,11 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="note info">
+    <span class="nt">Documented as design — by choice or other tiers</span>
+    A few pieces are specified in the written design rather than built live. <strong>Workflow 1:</strong> the marketing → MQL path (email-click and page-view signals are Marketing Hub). <strong>Workflow 2:</strong> an open-deals-only de-dupe rollup (needs Operations Hub — the build uses HubSpot's native associated-deal count); the full deal-stage progression (Demo → Discovery, Trial → Evaluation), which belongs in a deal-based workflow; the validation guardrails (incomplete-deal hold, stale-deal alert, CS handoff on won); and a live <code>Amount</code> lookup (plan × seats / CPQ — the build uses a static demo default).
   </div>
 
   <div class="note warn">
