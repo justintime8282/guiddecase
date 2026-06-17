@@ -202,6 +202,7 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
         <div class="a r" style="--i:6"><b>4 · Ownership spans BDR · AE · CS</b>BDR qualifies and routes; AE owns the deal; CS supports trial and owns post-sale.</div>
         <div class="a r" style="--i:7"><b>5 · Hybrid deal creation</b>A human makes the qualification call, then the system creates and standardizes the deal.</div>
         <div class="a r" style="--i:8"><b>6 · Outbound is a secondary on-ramp</b>It feeds the same qualification gate as PLG — one pipeline, two acquisition motions.</div>
+        <div class="a r" style="--i:9;grid-column:1/-1;border-left-color:var(--charcoal)"><b>7 · HubSpot tier</b>Built on a <strong>Sales Hub Professional trial</strong>. Native lead scoring and marketing-engagement signals need Marketing Hub (documented as design); the live build uses product-activation equivalents.</div>
       </div>
     </div>
   </section>
@@ -306,6 +307,7 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
         <div class="card r" style="--i:4"><span class="n">DEDUPE — THE CORE</span><h4 style="margin-top:6px">Create vs. Update</h4><p><span class="pill ok">none → Create</span> a deal at SQL, owner = Contact Owner, set source &amp; amount, <strong>associate to contact</strong>, 48h task, notify owner.<br><br><span class="pill warn">has one → Update</span> the existing deal (built here as a review task).</p></div>
         <div class="card r" style="--i:5"><span class="n">VALIDATION</span><h4 style="margin-top:6px">Guardrails on the data</h4><p>• Missing field → incomplete-deal hold.<br>• Idle past SLA → stale-deal alert.<br>• Closed Lost → require structured reason.<br>• Closed Won → CS handoff fires.</p></div>
       </div>
+      <div class="note info r" style="--i:6;margin-top:14px"><span class="nt">Why some of this is documented, not built</span>The live build covers enrollment, de-dupe, and the create-deal path. The heavier pieces — full stage progression, an open-deals rollup, and validation guardrails — are specified in the design. Full map in Tier &amp; scope.</div>
     </div>
   </section>
 
@@ -353,14 +355,15 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
       <h2 class="r" style="--i:1">Stages, owners, automation</h2>
       <div class="r" style="--i:2;overflow-x:auto;margin-top:14px">
         <table class="tbl">
-          <thead><tr><th>Stage</th><th>Entry</th><th>Exit</th><th>Required (new)</th><th>Owner</th></tr></thead>
+          <thead><tr><th>Stage</th><th>Entry</th><th>Exit</th><th>Required (new)</th><th>Owner</th><th>Automation</th></tr></thead>
           <tbody>
-            <tr><td><b>SQL / New Opp</b></td><td>Demo, 2+ activations, or BDR-qualified</td><td>Discovery scheduled</td><td>Source, Amount, ICP Fit, Use Case</td><td class="owner">BDR → AE</td></tr>
-            <tr><td><b>Discovery &amp; Demo</b></td><td>Discovery booked</td><td>Need + timeline documented</td><td>Pain, Timeline, Champion</td><td class="owner">AE</td></tr>
-            <tr><td><b>Evaluation / Trial</b></td><td>Guided eval begins</td><td>Success criteria met</td><td>Active Users, Technical Fit</td><td class="owner">AE + CS</td></tr>
-            <tr><td><b>Proposal &amp; Neg.</b></td><td>Proposal sent</td><td>Verbal agreement</td><td>Confirmed ACV, Plan/Seats</td><td class="owner">AE</td></tr>
-            <tr><td><b>Verbal Commit</b></td><td>Verbal yes</td><td>Signed or stalled</td><td>Contract Date, Signatory</td><td class="owner">AE</td></tr>
-            <tr><td><b>Closed Won / Lost</b></td><td>Terminal</td><td>—</td><td>Final ACV / Loss Reason</td><td class="owner">AE → CS</td></tr>
+            <tr><td><b>SQL / New Opp</b></td><td>Demo, 2+ activations, or BDR-qualified</td><td>Discovery scheduled</td><td>Source, Amount, ICP Fit, Use Case</td><td class="owner">BDR → AE</td><td>Auto-create deal, dedupe, 48h task</td></tr>
+            <tr><td><b>Discovery &amp; Demo</b></td><td>Discovery booked</td><td>Need + timeline documented</td><td>Pain, Timeline, Champion</td><td class="owner">AE</td><td>Reminder if idle 5 days</td></tr>
+            <tr><td><b>Evaluation / Trial</b></td><td>Guided eval begins</td><td>Success criteria met</td><td>Active Users, Technical Fit</td><td class="owner">AE + CS</td><td>Low-usage alert; CS onboarding</td></tr>
+            <tr><td><b>Proposal &amp; Neg.</b></td><td>Proposal sent</td><td>Verbal agreement</td><td>Confirmed ACV, Plan/Seats</td><td class="owner">AE</td><td>Stuck-deal alert at 14 days</td></tr>
+            <tr><td><b>Verbal Commit</b></td><td>Verbal yes</td><td>Signed or stalled</td><td>Contract Date, Signatory</td><td class="owner">AE</td><td>Signature follow-up tasks</td></tr>
+            <tr><td><b>Closed Won</b></td><td>Deal won</td><td>Terminal</td><td>Final ACV, Seats, CS Owner</td><td class="owner">AE → CS</td><td>Onboarding handoff fires</td></tr>
+            <tr><td><b>Closed Lost</b></td><td>Deal lost</td><td>Terminal</td><td>Loss Reason, Competitor</td><td class="owner">AE</td><td>Stamp reason; set re-engage</td></tr>
           </tbody>
         </table>
       </div>
@@ -368,15 +371,29 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
     </div>
   </section>
 
-  <!-- 13. DEAL CREATION + RISKS -->
-  <section class="slide tint" data-title="Process">
+  <!-- 13. DEAL CREATION -->
+  <section class="slide tint" data-title="Deal creation">
     <div class="slide-inner">
-      <span class="k r">2 · Deal creation &nbsp;·&nbsp; 3 · Risks &amp; tooling</span>
-      <h2 class="r" style="--i:1">Who creates deals — and what could break</h2>
+      <span class="k r">2 · Deal creation</span>
+      <h2 class="r" style="--i:1">Judgment by human, creation by system</h2>
       <div class="grid g3" style="margin-top:18px">
-        <div class="card r" style="--i:2"><h4>Who &amp; when</h4><p>The <strong>BDR makes the call</strong>; HubSpot <strong>creates the deal automatically</strong> — no missed opportunities, no pipeline flooding.</p></div>
-        <div class="card r" style="--i:3"><div class="ico">⚠</div><h4>Operational risk</h4><p>PLG-hybrid is fragile if qualification is loose — over-routing wastes time, under-routing misses intent. Mitigation: explicit rules + SLA monitoring.</p></div>
-        <div class="card r" style="--i:4"><div class="ico">⌛</div><h4>The bottleneck</h4><p>The <strong>Trial → commercial</strong> transition. Evaluation must be a structured checkpoint, not a waiting room.</p></div>
+        <div class="card r" style="--i:2"><h4>Who &amp; when</h4><p>The <strong>BDR makes the qualification call</strong> (ICP fit + product behavior + use-case clarity + buying group + urgency). HubSpot then <strong>creates the deal automatically</strong> — no missed opportunities from forgotten manual creation, no pipeline flooding.</p></div>
+        <div class="card r" style="--i:3"><h4>Mandatory at creation</h4><p>Deal Source · Primary Contact · ICP Fit · Use Case · Amount/ACV · Buying Group · Timeline · Product Interest. <span class="muted">Covers the assignment's named examples.</span></p></div>
+        <div class="card r" style="--i:4"><h4>Validation rules</h4><p>No duplicate open deals per contact; Closed-Lost Reason is a <strong>picklist</strong>, never free text; required fields increase by stage; incomplete records block progression.</p></div>
+      </div>
+      <p class="muted r" style="--i:5;margin-top:12px"><strong>Supports forecasting:</strong> consistent creation + dedupe + advancement → trustworthy stage-conversion, weighted pipeline, and close dates.</p>
+    </div>
+  </section>
+
+  <!-- 13b. RISKS -->
+  <section class="slide" data-title="Risks &amp; tooling">
+    <div class="slide-inner">
+      <span class="k r">3 · Risks, bottlenecks &amp; tooling</span>
+      <h2 class="r" style="--i:1">What could break — and how to harden it</h2>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="card r" style="--i:2"><div class="ico">⚠</div><h4>Operational risk</h4><p>PLG-hybrid is fragile if qualification is loose — <strong>over-routing</strong> wastes rep time, <strong>under-routing</strong> misses intent. Mitigation: explicit activation rules, the score threshold, and SLA monitoring on follow-up speed.</p></div>
+        <div class="card r" style="--i:3"><div class="ico">⌛</div><h4>The bottleneck</h4><p>The <strong>Trial / POC → commercial</strong> transition. Prospects can <em>use</em> Guidde without revealing buying process. Evaluation must be a structured checkpoint — success criteria, active-user counts, CS onboarding.</p></div>
+        <div class="card r" style="--i:4"><div class="ico">🛠</div><h4>Tooling</h4><p><strong>Enrichment</strong> (Clearbit / Apollo) for ICP firmographics; a <strong>dedup / data-quality monitor</strong> (HubSpot Data Quality or Insycle); <strong>SLA alerting</strong> in workflows.</p></div>
       </div>
     </div>
   </section>
@@ -413,10 +430,45 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
                 <div class="mc ref"><div class="mn">Referral</div><div class="mr"><span>PQLs</span><b>24</b></div><div class="mr"><span>Won</span><b>$45K</b></div></div>
               </div>
             </div>
+            <div class="dcard"><div class="dct">Sales Performance</div><div class="dcs">rep quota attainment — QTD</div>
+              <table class="dtbl">
+                <thead><tr><th>Rep</th><th>Won $</th><th>Quota</th><th>Attain</th><th>Win</th></tr></thead>
+                <tbody>
+                  <tr><td>S. Chen</td><td>$127K</td><td>$150K</td><td style="color:var(--green);font-weight:700">85%</td><td>34%</td></tr>
+                  <tr><td>M. Webb</td><td>$89.5K</td><td>$120K</td><td style="color:var(--amber);font-weight:700">75%</td><td>28%</td></tr>
+                  <tr><td>P. Nair</td><td>$62K</td><td>$100K</td><td style="color:var(--amber);font-weight:700">62%</td><td>31%</td></tr>
+                  <tr><td>T. Ross</td><td>$40K</td><td>$80K</td><td style="color:var(--neg);font-weight:700">50%</td><td>22%</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="dcard"><div class="dct">Productivity &amp; Efficiency</div><div class="dcs">SLAs &amp; funnel conversion</div>
+              <div class="mini" style="grid-template-columns:1fr 1fr">
+                <div class="mc plg"><div class="mn">PQL → 1st action</div><div class="mr"><span>SLA</span><b>4.2h</b></div><div class="mr"><span>target</span><b>&lt;8h ✓</b></div></div>
+                <div class="mc out"><div class="mn">Follow-up SLA</div><div class="mr"><span>attain</span><b>78%</b></div><div class="mr"><span>target</span><b>&gt;90% ⚠</b></div></div>
+                <div class="mc inb"><div class="mn">Meetings / rep</div><div class="mr"><span>per wk</span><b>18</b></div><div class="mr"><span>avg</span><b>—</b></div></div>
+                <div class="mc ref"><div class="mn">Won handoff</div><div class="mr"><span>complete</span><b>91%</b></div><div class="mr"><span>CS fields</span><b>✓</b></div></div>
+              </div>
+              <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5">Demo-booked 66% · Discovery→Trial 61% · Trial→Proposal 63%</div>
+            </div>
           </div>
         </div>
       </div>
       <p class="muted r" style="--i:2;margin-top:10px">Illustrative data — not real Guidde figures. Interactive build &amp; full KPI definitions in the written report.</p>
+    </div>
+  </section>
+
+  <!-- 15b. DASHBOARD Q&A -->
+  <section class="slide tint" data-title="Q → KPI">
+    <div class="slide-inner">
+      <span class="k r">Part 3 · How it answers leadership</span>
+      <h2 class="r" style="--i:1">Each question → the KPI that answers it</h2>
+      <div class="grid g2" style="margin-top:18px">
+        <div class="card r" style="--i:2"><h4>Who is performing best?</h4><p>Sales Performance — Won $, win rate, quota attainment by rep.</p></div>
+        <div class="card r" style="--i:3"><h4>Which channels generate the most revenue?</h4><p>Channel Performance — PQLs, Won $ &amp; win rate by acquisition channel.</p></div>
+        <div class="card r" style="--i:4"><h4>Where are the bottlenecks?</h4><p>Avg days in stage + stage-to-stage conversion + the funnel.</p></div>
+        <div class="card r" style="--i:5"><h4>What will increase revenue?</h4><p>Conversion / SLA gaps + loss-reason patterns + coverage vs target.</p></div>
+      </div>
+      <div class="note info r" style="--i:6;margin-top:14px"><span class="nt">Quota vs. Target &amp; feasibility</span><strong>Quota</strong> = an individual rep's number; <strong>Target</strong> = the team's collective goal — kept distinct. Most KPIs build natively in HubSpot reports; a few polished cuts would sit in a BI layer fed by HubSpot.</div>
     </div>
   </section>
 
