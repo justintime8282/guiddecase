@@ -415,14 +415,15 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
     <div class="slide-inner">
       <span class="k r">Part 3 · Revenue dashboard</span>
       <h2 class="r" style="--i:1">Built around the four questions leadership actually asks</h2>
-      <p class="lead r" style="--i:2;margin-bottom:18px">A top KPI strip gives the at-a-glance snapshot — open pipeline, commit / best-case forecast, closed won, sales cycle. The four panels below each own one question:</p>
+      <p class="lead r" style="--i:2;margin-bottom:16px">A headline KPI strip up top, then four panels — each owning one leadership question:</p>
+      <div class="card accent r" style="--i:3;margin-bottom:16px"><div class="n">EXECUTIVE SUMMARY · the snapshot strip</div><p>Open pipeline · Commit / Best-case forecast · Closed Won (QTD) · Avg sales cycle — the at-a-glance header before drilling into the four panels.</p></div>
       <div class="grid g2">
-        <div class="card accent r" style="--i:3"><div class="n">SALES PERFORMANCE · Q1</div><h4>Who is performing best?</h4><p>Won $, quota attainment, win rate &amp; SQL→Won by rep — surfaces coaching needs and quota risk early.</p></div>
-        <div class="card accent r" style="--i:4"><div class="n">CHANNEL PERFORMANCE · Q2</div><h4>Which channels drive revenue?</h4><p>PQLs, Won $ &amp; win rate by acquisition channel — where to invest, read as volume × quality per channel.</p></div>
-        <div class="card accent r" style="--i:5"><div class="n">PIPELINE &amp; FORECASTING · Q3</div><h4>Where are the bottlenecks — will we hit the number?</h4><p>Pipeline by stage, coverage vs target, stage-to-stage conversion, weighted pipeline by quarter, forecast accuracy, avg days in stage.</p></div>
-        <div class="card accent r" style="--i:6"><div class="n">PRODUCTIVITY &amp; EFFICIENCY · Q4</div><h4>What will increase revenue?</h4><p>SLA attainment, funnel-conversion gaps, loss-reason patterns, won-handoff completion — points to the fixable leaks.</p></div>
+        <div class="card accent r" style="--i:4"><div class="n">PIPELINE &amp; FORECASTING · Q1</div><h4>Where are the bottlenecks — will we hit the number?</h4><p>Pipeline by stage, coverage vs target, stage-to-stage conversion, weighted pipeline by quarter, forecast accuracy, avg days in stage.</p></div>
+        <div class="card accent r" style="--i:5"><div class="n">CHANNEL PERFORMANCE · Q2</div><h4>Which channels drive revenue?</h4><p>PQLs, Won $ &amp; win rate by acquisition channel — where to invest, read as volume × quality per channel.</p></div>
+        <div class="card accent r" style="--i:6"><div class="n">SALES PERFORMANCE · Q3</div><h4>Who is performing best?</h4><p>Won $, quota attainment, win rate &amp; SQL→Won by rep — surfaces coaching needs and quota risk early.</p></div>
+        <div class="card accent r" style="--i:7"><div class="n">PRODUCTIVITY &amp; EFFICIENCY · Q4</div><h4>What will increase revenue?</h4><p>SLA attainment, funnel-conversion gaps, loss-reason patterns, won-handoff completion — points to the fixable leaks.</p></div>
       </div>
-      <div class="note info r" style="--i:7;margin-top:14px"><span class="nt">Quota vs. Target &amp; feasibility</span><strong>Quota</strong> = an individual rep's number; <strong>Target</strong> = the team's collective goal — kept distinct. Most KPIs build natively in HubSpot reports; a few polished cuts (weighted pipeline, forecast accuracy) sit in a BI layer fed by HubSpot.</div>
+      <div class="note info r" style="--i:8;margin-top:14px"><span class="nt">Quota vs. Target &amp; feasibility</span><strong>Quota</strong> = an individual rep's number; <strong>Target</strong> = the team's collective goal — kept distinct. Most KPIs build natively in HubSpot reports; a few polished cuts (weighted pipeline, forecast accuracy) sit in a BI layer fed by HubSpot.</div>
     </div>
   </section>
 
@@ -440,7 +441,7 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
             <div class="kpi"><div class="kl">Avg Cycle</div><div class="kv">34<span class="u"> days</span></div><div class="ks">create → won</div><span class="kb">↓ 4 days</span></div>
           </div>
           <div class="dgrid">
-            <div class="dcard"><div class="dct">Pipeline by Stage ($K)</div><div class="dcs">funnel · pipeline shape &amp; bottlenecks · Q3</div><div class="ch"><canvas id="cPipe"></canvas></div></div>
+            <div class="dcard"><div class="dct">Pipeline by Stage ($K)</div><div class="dcs">funnel · pipeline shape &amp; bottlenecks · Q1</div><div class="ch"><canvas id="cPipe"></canvas></div></div>
             <div class="dcard"><div class="dct">Channel Performance</div><div class="dcs">PQLs by acquisition channel (QTD) · Q2</div><div class="ch"><canvas id="cMot"></canvas></div>
               <div class="mini">
                 <div class="mc plg"><div class="mn">Self-serve</div><div class="mr"><span>PQLs</span><b>142</b></div><div class="mr"><span>Won</span><b>$178K</b></div><div class="mr"><span>Win</span><b>31%</b></div></div>
@@ -449,7 +450,7 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
                 <div class="mc ref"><div class="mn">Referral</div><div class="mr"><span>PQLs</span><b>24</b></div><div class="mr"><span>Won</span><b>$45K</b></div><div class="mr"><span>Win</span><b>35%</b></div></div>
               </div>
             </div>
-            <div class="dcard"><div class="dct">Sales Performance</div><div class="dcs">rep quota attainment — QTD · Q1</div>
+            <div class="dcard"><div class="dct">Sales Performance</div><div class="dcs">rep quota attainment — QTD · Q3</div>
               <table class="dtbl">
                 <thead><tr><th>Rep</th><th>Won $</th><th>Quota</th><th>Attain</th><th>Win</th></tr></thead>
                 <tbody>
