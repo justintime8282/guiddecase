@@ -8,3 +8,6 @@ Thumbs.db
 
 # Company-provided assignment (do not redistribute)
 Sales Operations Manager - Home assignment.pdf
+
+# Working/prep notes — keep local, never publish (public repo = HTML deliverables only)
+*.md
