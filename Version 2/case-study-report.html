@@ -377,16 +377,17 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:12px}
 
   <div class="cards c2">
     <div class="card">
-      <span class="n">DEDUPE — THE CORE</span>
+      <span class="n">DEDUPE — THE CORE</span> <span class="pill ok">Built · in the video</span>
       <h4 style="margin-top:6px">Create vs. Update</h4>
       <p>Before creating anything, the workflow checks whether the contact already has an associated deal:</p>
       <p style="margin-top:8px"><span class="pill ok">none → Create</span> a new deal at SQL, owner = Contact Owner, set Deal Source &amp; Amount, <strong>associate it to the contact</strong>, create a 48h task, notify the owner.<br><br>
       <span class="pill warn">has one → Update</span> the existing deal — in the full design: Demo → Discovery, Trial → Evaluation; built here as a review task.</p>
     </div>
     <div class="card">
-      <span class="n">VALIDATION &amp; ACCURACY</span>
+      <span class="n">VALIDATION &amp; ACCURACY</span> <span class="pill warn">Documented design — not built</span>
       <h4 style="margin-top:6px">Guardrails on the data</h4>
-      <p>• Missing required field → "Incomplete deal" task + hold.<br>
+      <p><em>Specified in the design, not in the live build:</em><br>
+      • Missing required field → "Incomplete deal" task + hold.<br>
       • Idle beyond stage SLA → stale-deal alert.<br>
       • Closed Lost → require structured <strong>Closed-Lost Reason</strong> + Competitor.<br>
       • Closed Won → auto-trigger the CS handoff.</p>
