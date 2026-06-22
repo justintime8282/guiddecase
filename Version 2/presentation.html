@@ -257,29 +257,10 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
     </div>
   </section>
 
-  <!-- 6. PIPELINE -->
-  <section class="slide" data-title="Pipeline">
-    <div class="slide-inner">
-      <span class="k r">3 · The deal pipeline</span>
-      <h2 class="r" style="--i:1">A new-business pipeline that starts at SQL</h2>
-      <p class="lead r" style="--i:2;margin-bottom:22px">It begins when product or high-intent signals justify sales engagement — not when a rep decides to open a deal.</p>
-      <div class="flow r" style="--i:3">
-        <div class="step"><div class="s1">SQL</div><div class="s2">10%</div></div>
-        <div class="step"><div class="s1">Discovery</div><div class="s2">25%</div></div>
-        <div class="step"><div class="s1">Evaluation</div><div class="s2">45%</div></div>
-        <div class="step"><div class="s1">Proposal</div><div class="s2">65%</div></div>
-        <div class="step"><div class="s1">Verbal Commit</div><div class="s2">85%</div></div>
-        <div class="step hl"><div class="s1">Closed Won</div><div class="s2">100%</div></div>
-        <div class="step"><div class="s1">Closed Lost</div><div class="s2">0%</div></div>
-      </div>
-      <div class="note info r" style="--i:4;margin-top:16px"><span class="nt">Two implementation notes</span><strong>Stage weights</strong> are illustrative defaults — in a real build they'd be <strong>calibrated to Guidde's historic stage-level win rates</strong>. <strong>Deal creation vs. "Opportunity":</strong> the deal is created at <strong>SQL</strong>, but the contact's lifecycle flips to <strong>Opportunity</strong> only when the deal advances <strong>SQL → Discovery</strong> — so "Opportunity" means a deal actively being worked, not just a record that exists.</div>
-    </div>
-  </section>
-
   <!-- 7. WORKFLOW 1 -->
-  <section class="slide tint" data-title="Workflow 1">
+  <section class="slide" data-title="Workflow 1">
     <div class="slide-inner">
-      <span class="k r">4 · Workflow 1</span>
+      <span class="k r">3 · Workflow 1</span>
       <h2 class="r" style="--i:1">Lead Lifecycle</h2>
       <div class="video r" style="--i:2;margin:14px 0 18px">
         <div class="vp">▶</div>
@@ -291,6 +272,25 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
         <div class="card r" style="--i:4"><span class="n">LOGIC</span><h4 style="margin-top:6px">What happens inside</h4><p><strong>Guard:</strong> if already SQL / Opportunity / Customer → stop (never move backward).<br><strong>Branch — SQL Qualified:</strong> 2+ activation events OR BDR-qualified → set <strong>SQL</strong>.<br><strong>Branch — otherwise:</strong> a single product action → set <strong>PQL</strong>.<br>Every move stamps a <strong>Lifecycle Change Reason</strong> for a clean audit trail.</p></div>
       </div>
       <div class="note info r" style="--i:5;margin-top:14px"><span class="nt">Why some lifecycle triggers aren't in the live build</span>The full design also promotes <strong>Lead → MQL</strong> on marketing engagement. Those signals (marketing-email clicks, page-view tracking) live in <strong>Marketing Hub</strong>, outside this Sales Hub trial — so the live Workflow 1 focuses on the <strong>product-qualification path (PQL → SQL)</strong>, the differentiator of a PLG-hybrid model and fully buildable here. Full breakdown in Tier &amp; scope.</div>
+    </div>
+  </section>
+
+  <!-- 7b. PIPELINE -->
+  <section class="slide tint" data-title="Pipeline">
+    <div class="slide-inner">
+      <span class="k r">4 · The deal pipeline</span>
+      <h2 class="r" style="--i:1">A new-business pipeline that starts at SQL</h2>
+      <p class="lead r" style="--i:2;margin-bottom:22px">It begins when product or high-intent signals justify sales engagement — not when a rep decides to open a deal. Workflow 1 brings a contact to <strong>SQL</strong>; this is the pipeline that picks them up.</p>
+      <div class="flow r" style="--i:3">
+        <div class="step"><div class="s1">SQL</div><div class="s2">10%</div></div>
+        <div class="step"><div class="s1">Discovery</div><div class="s2">25%</div></div>
+        <div class="step"><div class="s1">Evaluation</div><div class="s2">45%</div></div>
+        <div class="step"><div class="s1">Proposal</div><div class="s2">65%</div></div>
+        <div class="step"><div class="s1">Verbal Commit</div><div class="s2">85%</div></div>
+        <div class="step hl"><div class="s1">Closed Won</div><div class="s2">100%</div></div>
+        <div class="step"><div class="s1">Closed Lost</div><div class="s2">0%</div></div>
+      </div>
+      <div class="note info r" style="--i:4;margin-top:16px"><span class="nt">Two implementation notes</span><strong>Stage weights</strong> are illustrative defaults — in a real build they'd be <strong>calibrated to Guidde's historic stage-level win rates</strong>. <strong>Deal creation vs. "Opportunity":</strong> the deal is created at <strong>SQL</strong>, but the contact's lifecycle flips to <strong>Opportunity</strong> only when the deal advances <strong>SQL → Discovery</strong> — so "Opportunity" means a deal actively being worked, not just a record that exists.</div>
     </div>
   </section>
 
@@ -381,8 +381,8 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
       <h2 class="r" style="--i:1">Judgment by human, creation by system</h2>
       <div class="grid g3" style="margin-top:18px">
         <div class="card r" style="--i:2"><h4>Who &amp; when</h4><p>The <strong>BDR makes the qualification call</strong> (ICP fit + product behavior + use-case clarity + buying group + urgency). HubSpot then <strong>creates the deal automatically</strong> — no missed opportunities from forgotten manual creation, no pipeline flooding.</p></div>
-        <div class="card r" style="--i:3"><h4>Mandatory at creation</h4><p>Deal Source · Primary Contact · ICP Fit · Use Case · Amount/ACV · Buying Group · Timeline · Product Interest. <span class="muted">Covers the assignment's named examples.</span></p></div>
-        <div class="card r" style="--i:4"><h4>Validation rules</h4><p>No duplicate open deals per contact; Closed-Lost Reason is a <strong>picklist</strong>, never free text; required fields increase by stage; incomplete records block progression.</p></div>
+        <div class="card r" style="--i:3"><h4>Mandatory at creation</h4><p>Required fields, set at the moment of creation:</p><p style="margin-top:6px">Deal Source · Primary Contact · ICP Fit · Use Case · Amount/ACV · Buying Group · Timeline · Product Interest.</p></div>
+        <div class="card r" style="--i:4"><h4>Validation rules</h4><p>• No duplicate open deals per contact<br>• Closed-Lost Reason is a <strong>picklist</strong>, never free text<br>• Required fields increase by stage<br>• Incomplete records block progression</p></div>
       </div>
       <p class="muted r" style="--i:5;margin-top:12px"><strong>Supports forecasting:</strong> consistent creation + dedupe + advancement → trustworthy stage-conversion, weighted pipeline, and close dates.</p>
     </div>
@@ -416,12 +416,12 @@ em{font-style:normal;color:var(--brand-dark);font-weight:600}
       <span class="k r">1 · KPI framework</span>
       <h2 class="r" style="--i:1">Built around the four questions leadership actually asks</h2>
       <p class="lead r" style="--i:2;margin-bottom:16px">A headline KPI strip up top, then four panels — each owning one leadership question:</p>
-      <div class="card accent r" style="--i:3;margin-bottom:16px"><div class="n">EXECUTIVE SUMMARY</div><h4>The at-a-glance snapshot strip</h4><p>Open pipeline · Commit / Best-case forecast · Closed Won (QTD) · Avg sales cycle — the header before drilling into the four panels.</p></div>
+      <div class="card accent r" style="--i:3;margin-bottom:16px"><div class="n">EXECUTIVE SUMMARY</div><h4>The at-a-glance snapshot strip</h4><p>Open pipeline · Commit / Best-case forecast · Closed Won (QTD) · Avg sales cycle.</p></div>
       <div class="grid g2">
         <div class="card accent r" style="--i:4"><div class="n">PIPELINE &amp; FORECASTING · Q1</div><h4>Where are the bottlenecks — will we hit the number?</h4><p>Pipeline by stage, coverage vs target, stage-to-stage conversion, weighted pipeline by quarter, forecast accuracy, avg days in stage.</p></div>
-        <div class="card accent r" style="--i:5"><div class="n">CHANNEL PERFORMANCE · Q2</div><h4>Which channels drive revenue?</h4><p>PQLs, Won $ &amp; win rate by acquisition channel — where to invest, read as volume × quality per channel.</p></div>
-        <div class="card accent r" style="--i:6"><div class="n">SALES PERFORMANCE · Q3</div><h4>Who is performing best?</h4><p>Won $, quota attainment, win rate &amp; SQL→Won by rep — surfaces coaching needs and quota risk early.</p></div>
-        <div class="card accent r" style="--i:7"><div class="n">PRODUCTIVITY &amp; EFFICIENCY · Q4</div><h4>What will increase revenue?</h4><p>SLA attainment, funnel-conversion gaps, loss-reason patterns, won-handoff completion — points to the fixable leaks.</p></div>
+        <div class="card accent r" style="--i:5"><div class="n">CHANNEL PERFORMANCE · Q2</div><h4>Which channels drive revenue? — where to invest (volume × quality)</h4><p>PQLs, Won $ &amp; win rate by acquisition channel.</p></div>
+        <div class="card accent r" style="--i:6"><div class="n">SALES PERFORMANCE · Q3</div><h4>Who is performing best? — coaching &amp; quota risk, early</h4><p>Won $, quota attainment, win rate &amp; SQL→Won by rep.</p></div>
+        <div class="card accent r" style="--i:7"><div class="n">PRODUCTIVITY &amp; EFFICIENCY · Q4</div><h4>What will increase revenue? — the fixable leaks</h4><p>SLA attainment, funnel-conversion gaps, loss-reason patterns, won-handoff completion.</p></div>
       </div>
       <div class="note info r" style="--i:8;margin-top:14px"><span class="nt">Quota vs. Target &amp; feasibility</span><strong>Quota</strong> = an individual rep's number; <strong>Target</strong> = the team's collective goal — kept distinct. Most KPIs build natively in HubSpot reports; a few polished cuts (weighted pipeline, forecast accuracy) sit in a BI layer fed by HubSpot.</div>
     </div>
